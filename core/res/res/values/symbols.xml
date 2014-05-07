@@ -2353,11 +2353,6 @@
 
   <java-symbol type="drawable" name="platlogo_m" />
 
-  <!-- cpu boost for AppLaunch -->
-  <java-symbol type="bool" name="config_disablePacking" />
-  <java-symbol type="integer" name="disablepacking_timeout_param" />
-  <java-symbol type="array" name="launchboost_packing_param_value" />
-
   <java-symbol type="string" name="config_networkPolicyNotificationComponent" />
   <java-symbol type="drawable" name="platlogo_m" />
 
@@ -2370,10 +2365,6 @@
 
   <!-- IpReachability Monitor -->
   <java-symbol type="bool" name="config_wifi_ipreachability_monitor" />
-
-  <!-- Data Connectivity Error Configurations -->
-  <java-symbol type="bool" name="config_reject_ggsn_perm_failure" />
-  <java-symbol type="bool" name="config_protocol_errors_perm_failure" />
 
   <!-- Regional Specific Symbols -->
   <java-symbol type="bool" name="config_dateformat" />
@@ -2429,4 +2420,11 @@
 
   <!-- Configuration to play sms ringtone during MO/MT call -->
   <java-symbol type="bool" name="config_sms_ringtone_incall" />
+
+  <!-- IpReachability Monitor -->
+  <java-symbol type="bool" name="config_wifi_ipreachability_monitor" />
+
+  <!-- Data Connectivity Error Configurations -->
+  <java-symbol type="bool" name="config_reject_ggsn_perm_failure" />
+  <java-symbol type="bool" name="config_protocol_errors_perm_failure" />
 </resources>
