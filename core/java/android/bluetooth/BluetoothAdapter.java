@@ -1901,10 +1901,13 @@ public final class BluetoothAdapter {
                 BluetoothA2dpSink a2dpSink = (BluetoothA2dpSink)proxy;
                 a2dpSink.close();
                 break;
+<<<<<<< HEAD
             case BluetoothProfile.AVRCP_CONTROLLER:
                 BluetoothAvrcpController avrcp = (BluetoothAvrcpController)proxy;
                 avrcp.close();
                 break;
+=======
+>>>>>>> 2263dd1... BluetoothA2dpSink: Add new BluetoothProfile subclass for A2DP sink
             case BluetoothProfile.INPUT_DEVICE:
                 BluetoothInputDevice iDev = (BluetoothInputDevice)proxy;
                 iDev.close();
