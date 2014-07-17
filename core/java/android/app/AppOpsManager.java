@@ -1006,8 +1006,6 @@ public class AppOpsManager {
         true,     // WRITE_EXTERNAL_STORAGE
         false,    // TURN_ON_SCREEN
         false,    // GET_ACCOUNTS
-        true,     // OP_WIFI_CHANGE
-        true,     // OP_BLUETOOTH_CHANGE
     };
 
     /**
@@ -2018,31 +2016,5 @@ public class AppOpsManager {
         } catch (RemoteException e) {
         }
         return isShow;
-    }
-
-    /** @hide */
-    public boolean getPrivacyGuardSettingForPackage(int uid, String packageName) {
-        try {
-            return mService.getPrivacyGuardSettingForPackage(uid, packageName);
-        } catch (RemoteException e) {
-        }
-        return false;
-    }
-
-    /** @hide */
-    public void setPrivacyGuardSettingForPackage(int uid, String packageName,
-            boolean state) {
-        try {
-            mService.setPrivacyGuardSettingForPackage(uid, packageName, state);
-        } catch (RemoteException e) {
-        }
-    }
-
-    /** @hide */
-    public void resetCounters() {
-        try {
-            mService.resetCounters();
-        } catch (RemoteException e) {
-        }
     }
 }
