@@ -239,6 +239,9 @@ public class AppOpsManager {
     public static final int OP_GET_ACCOUNTS = 62;
     /** @hide */
     public static final int _NUM_OP = 63;
+    public static final int OP_BLUETOOTH_CHANGE = 64;
+    /** @hide */
+    public static final int _NUM_OP = 65;
 
     /** Access to coarse location information. */
     public static final String OPSTR_COARSE_LOCATION = "android:coarse_location";
@@ -336,6 +339,11 @@ public class AppOpsManager {
     /** @hide Get device accounts. */
     public static final String OPSTR_GET_ACCOUNTS
             = "android:get_accounts";
+    /** @hide **/
+    private static final String OPSTR_WIFI_CHANGE =
+            "android:wifi_change";
+    private static final String OPSTR_BLUETOOTH_CHANGE =
+            "android:bluetooth_change";
 
     /**
      * This maps each operation to the operation that serves as the
@@ -409,6 +417,8 @@ public class AppOpsManager {
             OP_WRITE_EXTERNAL_STORAGE,
             OP_TURN_SCREEN_ON,
             OP_GET_ACCOUNTS,
+            OP_WIFI_CHANGE,
+            OP_BLUETOOTH_CHANGE,
     };
 
     /**
@@ -478,7 +488,9 @@ public class AppOpsManager {
             OPSTR_READ_EXTERNAL_STORAGE,
             OPSTR_WRITE_EXTERNAL_STORAGE,
             null,
-            OPSTR_GET_ACCOUNTS
+            OPSTR_GET_ACCOUNTS,
+            OPSTR_WIFI_CHANGE,
+            OPSTR_BLUETOOTH_CHANGE,
     };
 
     /**
@@ -549,6 +561,8 @@ public class AppOpsManager {
             "WRITE_EXTERNAL_STORAGE",
             "TURN_ON_SCREEN",
             "GET_ACCOUNTS",
+            "WIFI_CHANGE",
+            "BLUETOOTH_CHANGE",
     };
 
     /**
@@ -618,7 +632,9 @@ public class AppOpsManager {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             null, // no permission for turning the screen on
-            Manifest.permission.GET_ACCOUNTS
+            Manifest.permission.GET_ACCOUNTS,
+            Manifest.permission.CHANGE_WIFI_STATE,
+            Manifest.permission.BLUETOOTH,
     };
 
     /**
@@ -690,6 +706,8 @@ public class AppOpsManager {
             null, // WRITE_EXTERNAL_STORAGE
             null, // TURN_ON_SCREEN
             null, // GET_ACCOUNTS
+            null, //WIFI_CHANGE
+            null, //BLUETOOTH_CHANGE
     };
 
     /**
@@ -760,6 +778,8 @@ public class AppOpsManager {
             false, // WRITE_EXTERNAL_STORAGE
             false, // TURN_ON_SCREEN
             false, // GET_ACCOUNTS
+            false, // WIFI_CHANGE
+            false, // BLUETOOTH_CHANGE
     };
 
     /**
@@ -829,6 +849,152 @@ public class AppOpsManager {
             AppOpsManager.MODE_ALLOWED,
             AppOpsManager.MODE_ALLOWED,  // OP_TURN_ON_SCREEN
             AppOpsManager.MODE_ALLOWED,
+            AppOpsManager.MODE_ALLOWED, // OP_WIFI_CHANGE
+            AppOpsManager.MODE_ASK,     // OP_BLUETOOTH_CHANGE
+    };
+
+    /**
+     * This specifies the default mode for each strict operation.
+     */
+
+    private static int[] sOpDefaultStrictMode = new int[] {
+            AppOpsManager.MODE_ASK,     // OP_COARSE_LOCATION
+            AppOpsManager.MODE_ASK,     // OP_FINE_LOCATION
+            AppOpsManager.MODE_ASK,     // OP_GPS
+            AppOpsManager.MODE_ALLOWED, // OP_VIBRATE
+            AppOpsManager.MODE_ASK,     // OP_READ_CONTACTS
+            AppOpsManager.MODE_ASK,     // OP_WRITE_CONTACTS
+            AppOpsManager.MODE_ASK,     // OP_READ_CALL_LOG
+            AppOpsManager.MODE_ASK,     // OP_WRITE_CALL_LOG
+            AppOpsManager.MODE_ALLOWED, // OP_READ_CALENDAR
+            AppOpsManager.MODE_ALLOWED, // OP_WRITE_CALENDAR
+            AppOpsManager.MODE_ASK,     // OP_WIFI_SCAN
+            AppOpsManager.MODE_ALLOWED, // OP_POST_NOTIFICATION
+            AppOpsManager.MODE_ALLOWED, // OP_NEIGHBORING_CELLS
+            AppOpsManager.MODE_ASK,     // OP_CALL_PHONE
+            AppOpsManager.MODE_ASK,     // OP_READ_SMS
+            AppOpsManager.MODE_ASK,     // OP_WRITE_SMS
+            AppOpsManager.MODE_ASK,     // OP_RECEIVE_SMS
+            AppOpsManager.MODE_ALLOWED, // OP_RECEIVE_EMERGECY_SMS
+            AppOpsManager.MODE_ASK,     // OP_RECEIVE_MMS
+            AppOpsManager.MODE_ALLOWED, // OP_RECEIVE_WAP_PUSH
+            AppOpsManager.MODE_ASK,     // OP_SEND_SMS
+            AppOpsManager.MODE_ALLOWED, // OP_READ_ICC_SMS
+            AppOpsManager.MODE_ALLOWED, // OP_WRITE_ICC_SMS
+            AppOpsManager.MODE_ALLOWED, // OP_WRITE_SETTINGS
+            AppOpsManager.MODE_ALLOWED, // OP_SYSTEM_ALERT_WINDOW
+            AppOpsManager.MODE_ALLOWED, // OP_ACCESS_NOTIFICATIONS
+            AppOpsManager.MODE_ASK,     // OP_CAMERA
+            AppOpsManager.MODE_ASK,     // OP_RECORD_AUDIO
+            AppOpsManager.MODE_ALLOWED, // OP_PLAY_AUDIO
+            AppOpsManager.MODE_ALLOWED, // OP_READ_CLIPBOARD
+            AppOpsManager.MODE_ALLOWED, // OP_WRITE_CLIPBOARD
+            AppOpsManager.MODE_ALLOWED, // OP_TAKE_MEDIA_BUTTONS
+            AppOpsManager.MODE_ALLOWED, // OP_TAKE_AUDIO_FOCUS
+            AppOpsManager.MODE_ALLOWED, // OP_AUDIO_MASTER_VOLUME
+            AppOpsManager.MODE_ALLOWED, // OP_AUDIO_VOICE_VOLUME
+            AppOpsManager.MODE_ALLOWED, // OP_AUDIO_RING_VOLUME
+            AppOpsManager.MODE_ALLOWED, // OP_AUDIO_MEDIA_VOLUME
+            AppOpsManager.MODE_ALLOWED, // OP_AUDIO_ALARM_VOLUME
+            AppOpsManager.MODE_ALLOWED, // OP_AUDIO_NOTIFICATION_VOLUME
+            AppOpsManager.MODE_ALLOWED, // OP_AUDIO_BLUETOOTH_VOLUME
+            AppOpsManager.MODE_ALLOWED, // OP_WAKE_LOCK
+            AppOpsManager.MODE_ALLOWED, // OP_MONITOR_LOCATION
+            AppOpsManager.MODE_ASK,     // OP_MONITOR_HIGH_POWER_LOCATION
+            AppOpsManager.MODE_DEFAULT, // OP_GET_USAGE_STATS
+            AppOpsManager.MODE_ALLOWED, // OP_MUTE_MICROPHONE
+            AppOpsManager.MODE_ALLOWED, // OP_TOAST_WINDOW
+            AppOpsManager.MODE_IGNORED, // OP_PROJECT_MEDIA
+            AppOpsManager.MODE_IGNORED, // OP_ACTIVATE_VPN
+            AppOpsManager.MODE_ALLOWED, // OP WALLPAPER
+            AppOpsManager.MODE_ALLOWED, // OP_ASSIST_STRUCTURE
+            AppOpsManager.MODE_ALLOWED, // OP_ASSIST_SCREENSHOT
+            AppOpsManager.MODE_ALLOWED, // OP_READ_PHONE_STATE
+            AppOpsManager.MODE_ALLOWED, // OP_ADD_VOICEMAIL
+            AppOpsManager.MODE_ALLOWED, // OP_USE_SIP
+            AppOpsManager.MODE_ALLOWED, // OP_PROCESS_OUTGOING_CALLS
+            AppOpsManager.MODE_ALLOWED, // OP_USE_FINGERPRINT
+            AppOpsManager.MODE_ALLOWED, // OP_BODY_SENSORS
+            AppOpsManager.MODE_ALLOWED, // OP_READ_CELL_BROADCASTS
+            AppOpsManager.MODE_ERRORED, // OP_MOCK_LOCATION
+            AppOpsManager.MODE_ALLOWED, // OP_READ_EXTERNAL_STORAGE
+            AppOpsManager.MODE_ALLOWED, // OP_WRITE_EXTERNAL_STORAGE
+            AppOpsManager.MODE_ALLOWED, // OP_TURN_ON_SCREEN
+            AppOpsManager.MODE_ALLOWED, // OP_GET_ACCOUNTS
+            AppOpsManager.MODE_ASK,     // OP_WIFI_CHANGE
+            AppOpsManager.MODE_ASK,     // OP_BLUETOOTH_CHANGE
+    };
+
+    /**
+     * This specifies if operation is in strict mode.
+     */
+    private final static boolean[] sOpStrictMode = new boolean[] {
+        true,     // OP_COARSE_LOCATION
+        true,     // OP_FINE_LOCATION
+        true,     // OP_GPS
+        false,    // OP_VIBRATE
+        true,     // OP_READ_CONTACTS
+        true,     // OP_WRITE_CONTACTS
+        true,     // OP_READ_CALL_LOG
+        true,     // OP_WRITE_CALL_LOG
+        false,    // OP_READ_CALENDAR
+        false,    // OP_WRITE_CALENDAR
+        true,     // OP_WIFI_SCAN
+        false,    // OP_POST_NOTIFICATION
+        false,    // OP_NEIGHBORING_CELLS
+        true,     // OP_CALL_PHONE
+        true,     // OP_READ_SMS
+        true,     // OP_WRITE_SMS
+        false,    // OP_RECEIVE_SMS
+        false,    // OP_RECEIVE_EMERGECY_SMS
+        true,     // OP_RECEIVE_MMS
+        false,    // OP_RECEIVE_WAP_PUSH
+        true,     // OP_SEND_SMS
+        false,    // OP_READ_ICC_SMS
+        false,    // OP_WRITE_ICC_SMS
+        false,    // OP_WRITE_SETTINGS
+        false,    // OP_SYSTEM_ALERT_WINDOW
+        false,    // OP_ACCESS_NOTIFICATIONS
+        true,     // OP_CAMERA
+        true,     // OP_RECORD_AUDIO
+        false,    // OP_PLAY_AUDIO
+        false,    // OP_READ_CLIPBOARD
+        false,    // OP_WRITE_CLIPBOARD
+        false,    // OP_TAKE_MEDIA_BUTTONS
+        false,    // OP_TAKE_AUDIO_FOCUS
+        false,    // OP_AUDIO_MASTER_VOLUME
+        false,    // OP_AUDIO_VOICE_VOLUME
+        false,    // OP_AUDIO_RING_VOLUME
+        false,    // OP_AUDIO_MEDIA_VOLUME
+        false,    // OP_AUDIO_ALARM_VOLUME
+        false,    // OP_AUDIO_NOTIFICATION_VOLUME
+        false,    // OP_AUDIO_BLUETOOTH_VOLUME
+        false,    // OP_WAKE_LOCK
+        false,    // OP_MONITOR_LOCATION
+        true,     // OP_MONITOR_HIGH_POWER_LOCATION
+        false,    // OP_GET_USAGE_STATS
+        false,    // OP_MUTE_MICROPHONE
+        false,    // OP_TOAST_WINDOW
+        false,    // OP_PROJECT_MEDIA
+        false,    // OP_ACTIVATE_VPN
+        true,     // OP WALLPAPER
+        false,    //ASSIST_STRUCTURE
+        false,    //ASSIST_SCREENSHOT
+        false,    //READ_PHONE_STATE
+        false,    //ADD_VOICEMAIL
+        false,    // USE_SIP
+        false,    // PROCESS_OUTGOING_CALLS
+        false,    // USE_FINGERPRINT
+        false,    // BODY_SENSORS
+        false,    // READ_CELL_BROADCASTS
+        false,    // MOCK_LOCATION
+        true,     // READ_EXTERNAL_STORAGE
+        true,     // WRITE_EXTERNAL_STORAGE
+        false,    // TURN_ON_SCREEN
+        false,    // GET_ACCOUNTS
+        true,     // OP_WIFI_CHANGE
+        true,     // OP_BLUETOOTH_CHANGE
+>>>>>>> be26bfc... AppOps: Add Bluetooth enable control into AppOps
     };
 
     /**
@@ -901,7 +1067,9 @@ public class AppOpsManager {
             false,
             false,
             false,
-            false
+            false,
+            false,     // OP_WIFI_CHANGE
+            false,     // OP_BLUETOOTH_CHANGE
     };
 
     /**
