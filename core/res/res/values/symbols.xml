@@ -1813,6 +1813,9 @@
   <java-symbol type="string" name="smv_application" />
   <java-symbol type="string" name="smv_process" />
   <java-symbol type="string" name="tethered_notification_message" />
+  <java-symbol type="string" name="tethered_notification_no_device_message" />
+  <java-symbol type="string" name="tethered_notification_one_device_message" />
+  <java-symbol type="string" name="tethered_notification_multi_device_message" />
   <java-symbol type="string" name="tethered_notification_title" />
   <java-symbol type="string" name="usb_accessory_notification_title" />
   <java-symbol type="string" name="usb_mtp_notification_title" />
@@ -2350,9 +2353,6 @@
 
   <java-symbol type="drawable" name="platlogo_m" />
 
-  <!-- config softap extention feature -->
-  <java-symbol type="bool" name="config_softap_extention" />
-
   <!-- cpu boost for AppLaunch -->
   <java-symbol type="bool" name="config_disablePacking" />
   <java-symbol type="integer" name="disablepacking_timeout_param" />
@@ -2367,9 +2367,6 @@
   <!-- language/locale picker extention feature -->
   <java-symbol type="string" name="locale_codes" />
   <java-symbol type="bool"   name="config_display_country_for_locale_codes" />
-
-  <!-- config softap extention feature -->
-  <java-symbol type="bool" name="config_softap_extention" />
 
   <!-- Configuration to play sms ringtone during MO/MT call -->
   <java-symbol type="bool" name="config_sms_ringtone_incall" />
@@ -2429,4 +2426,7 @@
 
   <!-- for wifi auto connection -->
   <java-symbol type="bool" name="wifi_autocon" />
+
+  <!-- config softap extention feature -->
+  <java-symbol type="bool" name="config_softap_extention" />
 </resources>
