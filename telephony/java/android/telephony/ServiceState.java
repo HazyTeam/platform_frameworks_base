@@ -1137,7 +1137,8 @@ public class ServiceState implements Parcelable {
                 || radioTechnology == RIL_RADIO_TECHNOLOGY_EVDO_0
                 || radioTechnology == RIL_RADIO_TECHNOLOGY_EVDO_A
                 || radioTechnology == RIL_RADIO_TECHNOLOGY_EVDO_B
-                || radioTechnology == RIL_RADIO_TECHNOLOGY_EHRPD;
+                || radioTechnology == RIL_RADIO_TECHNOLOGY_EHRPD
+                || radioTechnology == RIL_RADIO_TECHNOLOGY_TD_SCDMA;
     }
 
     /** @hide */
