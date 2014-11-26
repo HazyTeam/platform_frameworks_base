@@ -2371,8 +2371,6 @@
   <!-- config softap extention feature -->
   <java-symbol type="bool" name="config_softap_extention" />
 
-  <!-- for wifi auto connection -->
-  <java-symbol type="bool" name="wifi_autocon" />
   <!-- Configuration to play sms ringtone during MO/MT call -->
   <java-symbol type="bool" name="config_sms_ringtone_incall" />
 
@@ -2428,4 +2426,7 @@
 
   <!-- Config.xml entries -->
   <java-symbol type="bool" name="config_samsung_stk" />
+
+  <!-- for wifi auto connection -->
+  <java-symbol type="bool" name="wifi_autocon" />
 </resources>
