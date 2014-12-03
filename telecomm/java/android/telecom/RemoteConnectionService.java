@@ -337,6 +337,10 @@ final class RemoteConnectionService {
                 findConnectionForAction(callId, "onConnectionEvent").onConnectionEvent(event);
             }
         }
+
+        @Override
+        public void resetCdmaConnectionTime(String callId) {
+        }
     };
 
     private final ConnectionServiceAdapterServant mServant =
