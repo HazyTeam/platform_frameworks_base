@@ -2368,9 +2368,6 @@
   <java-symbol type="string" name="locale_codes" />
   <java-symbol type="bool"   name="config_display_country_for_locale_codes" />
 
-  <!-- Configuration to play sms ringtone during MO/MT call -->
-  <java-symbol type="bool" name="config_sms_ringtone_incall" />
-
   <!-- IpReachability Monitor -->
   <java-symbol type="bool" name="config_wifi_ipreachability_monitor" />
 
@@ -2429,4 +2426,7 @@
 
   <!-- config softap extention feature -->
   <java-symbol type="bool" name="config_softap_extention" />
+
+  <!-- Configuration to play sms ringtone during MO/MT call -->
+  <java-symbol type="bool" name="config_sms_ringtone_incall" />
 </resources>
