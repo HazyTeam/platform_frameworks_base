@@ -757,6 +757,7 @@ public class ServiceState implements Parcelable {
             case RIL_RADIO_TECHNOLOGY_TD_SCDMA:
                 rtString = "TD-SCDMA";
                 break;
+
             default:
                 rtString = "Unexpected";
                 Rlog.w(LOG_TAG, "Unexpected radioTechnology=" + rt);
@@ -1110,8 +1111,11 @@ public class ServiceState implements Parcelable {
             return TelephonyManager.NETWORK_TYPE_HSPAP;
         case ServiceState.RIL_RADIO_TECHNOLOGY_GSM:
             return TelephonyManager.NETWORK_TYPE_GSM;
+<<<<<<< HEAD
         case ServiceState.RIL_RADIO_TECHNOLOGY_TD_SCDMA:
             return TelephonyManager.NETWORK_TYPE_TD_SCDMA;
+=======
+>>>>>>> bece926... Telephony: Implementation for IWLAN.
         case ServiceState.RIL_RADIO_TECHNOLOGY_IWLAN:
             return TelephonyManager.NETWORK_TYPE_IWLAN;
         default:
