@@ -632,32 +632,21 @@ public final class ClientOperation implements Operation, BaseStream {
 
         if (mGetOperation) {
             if (!mOperationDone) {
-                if (!mGetFinalFlag) {
-                    mReplyHeader.responseCode = ResponseCodes.OBEX_HTTP_CONTINUE;
-                    while ((more) && (mReplyHeader.responseCode ==
-                            ResponseCodes.OBEX_HTTP_CONTINUE)) {
-                        more = sendRequest(ObexHelper.OBEX_OPCODE_GET);
-                    }
-                    // For GET we need to loop until all headers have been sent,
-                    // And then we wait for the first continue package with the
-                    // reply.
-                    if (mReplyHeader.responseCode == ResponseCodes.OBEX_HTTP_CONTINUE) {
-                        mParent.sendRequest(ObexHelper.OBEX_OPCODE_GET_FINAL,
-                                null, mReplyHeader, mPrivateInput, mSrmActive);
-                    }
-                    if (mReplyHeader.responseCode != ResponseCodes.OBEX_HTTP_CONTINUE) {
-                        mOperationDone = true;
-                    } else {
-                        checkForSrm();
-                    }
-                } else {
-                    more = sendRequest(ObexHelper.OBEX_OPCODE_GET_FINAL);
-
-                    if (more) {
-                        throw new IOException("FINAL_GET forced, data didn't fit into one packet");
-                    }
-
+                mReplyHeader.responseCode = ResponseCodes.OBEX_HTTP_CONTINUE;
+                while ((more) && (mReplyHeader.responseCode == ResponseCodes.OBEX_HTTP_CONTINUE)) {
+                    more = sendRequest(ObexHelper.OBEX_OPCODE_GET);
+                }
+                // For GET we need to loop until all headers have been sent,
+                // And then we wait for the first continue package with the
+                // reply.
+                if (mReplyHeader.responseCode == ResponseCodes.OBEX_HTTP_CONTINUE) {
+                    mParent.sendRequest(ObexHelper.OBEX_OPCODE_GET_FINAL,
+                            null, mReplyHeader, mPrivateInput, mSrmActive);
+                }
+                if (mReplyHeader.responseCode != ResponseCodes.OBEX_HTTP_CONTINUE) {
                     mOperationDone = true;
+                } else {
+                    checkForSrm();
                 }
             }
         } else {
@@ -716,15 +705,7 @@ public final class ClientOperation implements Operation, BaseStream {
                 if (mPrivateInput == null) {
                     mPrivateInput = new PrivateInputStream(this);
                 }
-
-                if (!mGetFinalFlag) {
-                    sendRequest(ObexHelper.OBEX_OPCODE_GET);
-                } else {
-                    sendRequest(ObexHelper.OBEX_OPCODE_GET_FINAL);
-                }
-                if (mReplyHeader.responseCode != ResponseCodes.OBEX_HTTP_CONTINUE) {
-                    mOperationDone = true;
-                }
+                sendRequest(ObexHelper.OBEX_OPCODE_GET);
                 return true;
 
             } else if (mOperationDone) {
@@ -802,13 +783,12 @@ public final class ClientOperation implements Operation, BaseStream {
                 if (mReplyHeader.responseCode == -1) {
                     mReplyHeader.responseCode = ResponseCodes.OBEX_HTTP_CONTINUE;
                 }
-
-                while (mReplyHeader.responseCode == ResponseCodes.OBEX_HTTP_CONTINUE && !mOperationDone) {
+                while (mReplyHeader.responseCode == ResponseCodes.OBEX_HTTP_CONTINUE) {
                     if (!sendRequest(ObexHelper.OBEX_OPCODE_GET_FINAL)) {
                         break;
                     }
                 }
-                while (mReplyHeader.responseCode == ResponseCodes.OBEX_HTTP_CONTINUE && !mOperationDone) {
+                while (mReplyHeader.responseCode == ResponseCodes.OBEX_HTTP_CONTINUE) {
                     mParent.sendRequest(ObexHelper.OBEX_OPCODE_GET_FINAL, null,
                             mReplyHeader, mPrivateInput, false);
                     // Regardless of the SRM state, wait for the response.
