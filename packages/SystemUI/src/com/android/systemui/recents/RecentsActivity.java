@@ -248,10 +248,21 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                 mEmptyView = mEmptyViewStub.inflate();
             }
             mEmptyView.setVisibility(View.VISIBLE);
+            if (Constants.DebugFlags.App.EnableSearchBar) {
+                mRecentsView.setSearchBarVisibility(View.GONE);
+            }
+            mEmptyView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismissRecentsToHome(true);
+                }
+            });
             mRecentsView.setSearchBarVisibility(View.GONE);
+            findViewById(R.id.floating_action_button).setVisibility(View.GONE);
         } else {
             if (mEmptyView != null) {
                 mEmptyView.setVisibility(View.GONE);
+                mEmptyView.setOnClickListener(null);
             }
             if (mRecentsView.hasValidSearchBar()) {
                 mRecentsView.setSearchBarVisibility(View.VISIBLE);
