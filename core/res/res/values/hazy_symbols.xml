@@ -24,4 +24,7 @@
   <java-symbol type="drawable" name="ic_lock_settings" />
   <java-symbol type="drawable" name="ic_lock_user" />
 
+  <!-- google webview -->
+  <java-symbol type="string" name="config_alternateWebViewPackageName" />
+
 </resources>
