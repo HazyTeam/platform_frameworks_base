@@ -261,6 +261,18 @@ public abstract class Connection extends Conferenceable {
     public static final int CAPABILITY_VOICE_PRIVACY = 0x00400000;
 
     /**
+     * Local device supports voice telephony.
+     * @hide
+     */
+    public static final int CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_LOCAL = 0x00800000;
+
+    /**
+      * Remote device supports voice telephony.
+      * @hide
+      */
+    public static final int CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_REMOTE = 0x01000000;
+
+    /**
      * Indicates that the connection itself wants to handle any sort of reply response, rather than
      * relying on SMS.
      * @hide
@@ -270,7 +282,7 @@ public abstract class Connection extends Conferenceable {
     //**********************************************************************************************
     // Next CAPABILITY value: 0x00800000
     //**********************************************************************************************
-
+    
     /**
      * Connection extra key used to store the last forwarded number associated with the current
      * connection.  Used to communicate to the user interface that the connection was forwarded via
@@ -400,6 +412,12 @@ public abstract class Connection extends Conferenceable {
         }
         if (can(capabilities, CAPABILITY_SUPPORTS_VT_REMOTE_BIDIRECTIONAL)) {
             builder.append(" CAPABILITY_SUPPORTS_VT_REMOTE_BIDIRECTIONAL");
+        }
+        if (can(capabilities, CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_LOCAL)) {
+            builder.append(" CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_LOCAL");
+        }
+        if (can(capabilities, CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_REMOTE)) {
+            builder.append(" CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_REMOTE");
         }
         if (can(capabilities, CAPABILITY_HIGH_DEF_AUDIO)) {
             builder.append(" CAPABILITY_HIGH_DEF_AUDIO");
