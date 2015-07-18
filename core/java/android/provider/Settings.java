@@ -3365,6 +3365,7 @@ public final class Settings {
                 "notification_light_screen_on_enable";
 
         /**
+<<<<<<< HEAD
          * Whether long press recents goes to last app
          * @hide
          */
@@ -3408,6 +3409,8 @@ public final class Settings {
         public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
 
         /**
+=======
+>>>>>>> ddfb502... Lights with Screen On [1/2]: Optional allowment of lights
          * Boolean value whether to link ringtone and notification volume
          * @hide
          */
@@ -3479,8 +3482,11 @@ public final class Settings {
             LOCK_TO_APP_ENABLED,
             NOTIFICATION_SOUND,
             NOTIFICATION_LIGHT_SCREEN_ON,
+<<<<<<< HEAD
             STATUS_BAR_SHOW_BATTERY_PERCENT,
             STATUS_BAR_BATTERY_STYLE,
+=======
+>>>>>>> ddfb502... Lights with Screen On [1/2]: Optional allowment of lights
             ALLOW_LIGHTS
         };
 
