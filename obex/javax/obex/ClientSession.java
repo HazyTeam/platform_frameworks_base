@@ -68,7 +68,7 @@ public final class ClientSession extends ObexSession {
 
     private final OutputStream mOutput;
 
-    private final boolean mLocalSrmSupported;
+    private boolean mLocalSrmSupported;
 
     private final ObexTransport mTransport;
 

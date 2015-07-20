@@ -1873,7 +1873,7 @@ public final class BluetoothAdapter {
         try {
             return mService.removeSdpRecord(recordHandle);
         } catch (RemoteException e) {
-            Log.e(TAG, "removeSdpRecord: ", e);
+            Log.e(TAG, "createMapMnsSdpRecord: ", e);
         }
         return false;
     }
