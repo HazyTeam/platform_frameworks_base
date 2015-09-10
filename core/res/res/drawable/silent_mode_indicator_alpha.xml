@@ -14,7 +14,17 @@
      limitations under the License.
 -->
 
+<<<<<<< HEAD:core/res/res/drawable/silent_mode_indicator_alpha.xml
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="false" android:drawable="@android:color/transparent" />
     <item android:state_selected="true"  android:drawable="@drawable/fab_mini_gray" />
 </selector>
+=======
+    <!-- Wi-Fi Hotspot disabled due to subscription change -->
+    <string name="subscription_change_disabled_wifi_ap">Disabled Wi-Fi hotspot due to SIM subscription change</string>
+
+    <!-- Wi-Fi turn off notification action text -->
+    <string name="notify_turn_wifi_off_title">Turn Wi-Fi off</string>
+
+</resources>
+>>>>>>> 45af7f5... framework: add "Turn wifi off" string:core/res/res/values/turbo_strings.xml
