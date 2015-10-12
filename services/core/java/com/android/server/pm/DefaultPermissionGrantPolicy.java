@@ -571,7 +571,6 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(musicPackage, STORAGE_PERMISSIONS, userId);
             }
 
-
 			// Chromium
             PackageParser.Package chromiumRPackage = getDefaultProviderAuthorityPackageLPr(
                     "org.chromium.chrome", userId);
@@ -649,6 +648,7 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(gmscorePackage, STORAGE_PERMISSIONS, userId);
             }
 
+<<<<<<< HEAD
 			// Google Connectivity Services
             PackageParser.Package gcsPackage = getDefaultProviderAuthorityPackageLPr(
                     "com.google.android.apps.gcs", userId);
@@ -717,6 +717,8 @@ final class DefaultPermissionGrantPolicy {
                 }
             }
 
+=======
+>>>>>>> b1f3670... Gapps permissions: gmscore, velvet, account manager
             mService.mSettings.onDefaultRuntimePermissionsGrantedLPr(userId);
         }
     }
