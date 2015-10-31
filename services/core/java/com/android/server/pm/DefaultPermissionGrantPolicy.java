@@ -648,7 +648,6 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(gmscorePackage, STORAGE_PERMISSIONS, userId);
             }
 
-<<<<<<< HEAD
 			// Google Connectivity Services
             PackageParser.Package gcsPackage = getDefaultProviderAuthorityPackageLPr(
                     "com.google.android.apps.gcs", userId);
@@ -716,9 +715,6 @@ final class DefaultPermissionGrantPolicy {
                             userId);
                 }
             }
-
-=======
->>>>>>> b1f3670... Gapps permissions: gmscore, velvet, account manager
             mService.mSettings.onDefaultRuntimePermissionsGrantedLPr(userId);
         }
     }
