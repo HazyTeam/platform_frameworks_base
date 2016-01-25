@@ -570,6 +570,13 @@ final class DefaultPermissionGrantPolicy {
                     && doesPackageSupportRuntimePermissions(musicPackage)) {
                 grantRuntimePermissionsLPw(musicPackage, STORAGE_PERMISSIONS, userId);
             }
+            
+            // Chromium
+            PackageParser.Package chromiumPackage = getDefaultProviderAuthorityPackageLPr(
+            	"org.chromium.chrome", userId);
+            if (chromiumPackage != null) {
+            	grantRuntimePermissionLPw(chromiumPackage, CONTACTS_PERMISSIONS, userId);
+            }
 
             // Android Wear Home
             if (mService.hasSystemFeature(PackageManager.FEATURE_WATCH)) {
