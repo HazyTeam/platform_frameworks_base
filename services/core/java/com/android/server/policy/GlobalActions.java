@@ -169,7 +169,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
         mShowSilentToggle = SHOW_SILENT_TOGGLE && !mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_useFixedVolume);
-    }
+
         updatePowerMenuActions();
                 }
 
@@ -291,8 +291,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         mItems.add(mSilentModeAction);
 
         ArraySet<String> addedKeys = new ArraySet<String>();
-        for (int i = 0; i < defaultArray.length; i++) {
-            String actionKey = defaultArray[i];
+        for (int i = 0; i < actionsArray.length; i++) {
+            String actionKey = actionsArray[i];
             if (addedKeys.contains(actionKey)) {
                 // If we already have added this, don't add it again.
                 continue;
@@ -1211,8 +1211,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         ContentResolver resolver = mContext.getContentResolver();
         mActions = Settings.Global.getStringForUser(resolver,
                 Settings.Global.POWER_MENU_ACTIONS, UserHandle.USER_CURRENT);
-        mProfilesEnabled = Settings.System.getInt(resolver,
-                Settings.System.SYSTEM_PROFILES_ENABLED, 1) != 0;
     }
 
     PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
