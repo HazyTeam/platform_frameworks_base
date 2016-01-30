@@ -417,8 +417,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     IApplicationToken mFocusedApp;
 
     // Behavior of volbtn music controls
-    boolean mVolBtnMusicControls;
-    boolean mIsLongPress;
+    private boolean mVolBtnMusicControls;
+    private boolean mIsLongPress;
 
     PointerLocationView mPointerLocationView;
 
@@ -660,8 +660,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     dispatchMediaKeyRepeatWithWakeLock((KeyEvent)msg.obj);
                     break;
                 case MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK:
+                    mIsLongPress = true;
                     dispatchMediaKeyWithWakeLockToAudioService((KeyEvent)msg.obj);
-                    dispatchMediaKeyWithWakeLockToAudioService(KeyEvent.changeAction((KeyEvent)msg.obj, KeyEvent.ACTION_UP));
+                    dispatchMediaKeyWithWakeLockToAudioService(
+                        KeyEvent.changeAction((KeyEvent)msg.obj, KeyEvent.ACTION_UP));
                     break;
                 case MSG_DISPATCH_SHOW_RECENTS:
                     showRecentApps(false);
@@ -1742,7 +1744,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_CURRENT);
             mVolBtnMusicControls = (Settings.System.getIntForUser(resolver,
                     Settings.System.VOLBTN_MUSIC_CONTROLS, 1,
-                    UserHandle.USER_CURRENT) == 1);
+                    UserHandle.USER_CURRENT) != 0);
 
             // Configure wake gesture.
             boolean wakeGestureEnabledSetting = Settings.Secure.getIntForUser(resolver,
@@ -4834,13 +4836,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
      *    or wired headphones) or "remotely" (e.g. on a device using the Cast protocol and
      *    controlled by this device, or through remote submix).
      */
-    private boolean isMusicActive() {
+    boolean isMusicActive() {
         final AudioManager am = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
         if (am == null) {
             Log.w(TAG, "isMusicActive: couldn't get AudioManager reference");
             return false;
         }
-        return am.isMusicActive();
+        return am.isMusicActive(); || am.isMusicActiveRemotely();
     }
 
     final Object mScreenshotLock = new Object();
@@ -5056,7 +5058,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         int newKeyCode = event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP ?
                                 KeyEvent.KEYCODE_MEDIA_NEXT : KeyEvent.KEYCODE_MEDIA_PREVIOUS;
                         Message msg = mHandler.obtainMessage(MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK,
-                                new KeyEvent(event.getDownTime(), event.getEventTime(), event.getAction(), newKeyCode, 0));
+                                new KeyEvent(event.getDownTime(), event.getEventTime(),
+                                    event.getAction(), newKeyCode, 0));
                         msg.setAsynchronous(true);
                         mHandler.sendMessageDelayed(msg, ViewConfiguration.getLongPressTimeout());
                         break;
@@ -5067,19 +5070,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                                 break;
                             }
                         }
+                        if (!isScreenOn() && !mVolumeRockerWake) {
+                             // If we aren't passing to the user and no one else
+                            // handled it send it to the session manager to figure
+                            // out.
+                             MediaSessionLegacyHelper.getHelper(mContext)
+                                    .sendVolumeKeyEvent(KeyEvent.changeAction(event,
+                                    KeyEvent.ACTION_DOWN), true);
+                        }
                     }
                 }
-
-                if ((result & ACTION_PASS_TO_USER) == 0) {
-                    // If we aren't passing to the user and no one else
-                    // handled it send it to the session manager to figure
-                    // out.
-                    MediaSessionLegacyHelper.getHelper(mContext)
-                            .sendVolumeKeyEvent(event, true);
-                    break;
-                }
-                }
                 break;
+            }
 
             case KeyEvent.KEYCODE_ENDCALL: {
                 result &= ~ACTION_PASS_TO_USER;
