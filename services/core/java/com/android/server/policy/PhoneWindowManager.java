@@ -4842,7 +4842,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             Log.w(TAG, "isMusicActive: couldn't get AudioManager reference");
             return false;
         }
-        return am.isMusicActive(); || am.isMusicActiveRemotely();
+        return am.isMusicActive() || am.isMusicActiveRemotely();
     }
 
     final Object mScreenshotLock = new Object();
