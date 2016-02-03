@@ -288,6 +288,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         // Always add the power off option
         mItems.add(new PowerAction());
         mItems.add(new RebootAction());
+        mItems.add(getScreenshotAction());
         mItems.add(mSilentModeAction);
 
         ArraySet<String> addedKeys = new ArraySet<String>();
@@ -302,7 +303,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             } else if (GLOBAL_ACTION_KEY_REBOOT.equals(actionKey)) {
                 continue;
             } else if (GLOBAL_ACTION_KEY_SCREENSHOT.equals(actionKey)) {
-                mItems.add(getScreenshotAction());
+                continue;
             } else if (GLOBAL_ACTION_KEY_AIRPLANE.equals(actionKey)) {
                 mItems.add(mAirplaneModeOn);
             } else if (GLOBAL_ACTION_KEY_BUGREPORT.equals(actionKey)) {
