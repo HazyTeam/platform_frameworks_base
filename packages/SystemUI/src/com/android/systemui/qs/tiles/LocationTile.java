@@ -85,6 +85,7 @@ public class LocationTile extends QSTile<QSTile.BooleanState> {
     @Override
     protected void handleLongClick() {
         final boolean wasEnabled = (Boolean) mState.value;
+        MetricsLogger.action(mContext, getMetricsCategory(), wasEnabled);
         if(mController.setLocationEnabled(wasEnabled)) {
             showDetail(true);
         } else {
@@ -107,18 +108,22 @@ public class LocationTile extends QSTile<QSTile.BooleanState> {
             case Settings.Secure.LOCATION_MODE_OFF:
                 state.label = mContext.getString(R.string.quick_settings_location_off_label);
                 state.contentDescription = mContext.getString(R.string.accessibility_quick_settings_location_off);
+                state.icon = mDisable;
                 break;
             case Settings.Secure.LOCATION_MODE_BATTERY_SAVING:
                 state.label = mContext.getString(R.string.quick_settings_location_battery_saving_label);
                 state.contentDescription = mContext.getString(R.string.accessibility_quick_settings_location_battery_saving);
+                state.icon = R.drawable.ic_qs_location_battery_saving;
                 break;
             case Settings.Secure.LOCATION_MODE_SENSORS_ONLY:
                 state.label = mContext.getString(R.string.quick_settings_location_gps_only_label);
                 state.contentDescription = mContext.getString(R.string.accessibility_quick_settings_location_gps_only);
+                state.icon = mEnable;
                 break;
             case Settings.Secure.LOCATION_MODE_HIGH_ACCURACY:
                 state.label = mContext.getString(R.string.quick_settings_location_high_accuracy_label);
                 state.contentDescription = mContext.getString(R.string.accessibility_quick_settings_location_high_accuracy);
+                state.icon = mEnable;
                 break;
             default:
                 state.label = mContext.getString(R.string.quick_settings_location_label);
@@ -126,10 +131,10 @@ public class LocationTile extends QSTile<QSTile.BooleanState> {
         }
     }
 
-    @Override
-    public int getMetricsCategory() {
-        return MetricsLogger.QS_LOCATION;
-    }
+    //@Override
+    //public int getMetricsCategory() {
+    //    return MetricsLogger.QS_LOCATION;
+    //}
 
     @Override
     protected String composeChangeAnnouncement() {
