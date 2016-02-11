@@ -93,7 +93,7 @@ public class CellularTile extends QSTile<QSTile.SignalState> {
     @Override
     protected void handleLongClick() {
         MetricsLogger.action(mContext, getMetricsCategory());
-        if (mDataController.isMobileDataSupported()) {
+        if (mDataController.isMobileDataEnabled()) {
             showDetail(true);
         } else {
             mHost.startActivityDismissingKeyguard(CELLULAR_SETTINGS);
