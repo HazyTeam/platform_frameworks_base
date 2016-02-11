@@ -84,10 +84,11 @@ public class LocationTile extends QSTile<QSTile.BooleanState> {
 
     @Override
     protected void handleLongClick() {
+        final boolean wasEnabled = (Boolean) mState.value;
         if(mController.setLocationEnabled(wasEnabled)) {
             showDetail(true);
         } else {
-            mHost.startSettingsActivity(LOCATION_SETTINGS);
+            mHost.startActivityDismissingKeyguard(LOCATION_SETTINGS);
         }
     }
 
@@ -106,22 +107,18 @@ public class LocationTile extends QSTile<QSTile.BooleanState> {
             case Settings.Secure.LOCATION_MODE_OFF:
                 state.label = mContext.getString(R.string.quick_settings_location_off_label);
                 state.contentDescription = mContext.getString(R.string.accessibility_quick_settings_location_off);
-                state.iconId = mDisable;
                 break;
             case Settings.Secure.LOCATION_MODE_BATTERY_SAVING:
                 state.label = mContext.getString(R.string.quick_settings_location_battery_saving_label);
                 state.contentDescription = mContext.getString(R.string.accessibility_quick_settings_location_battery_saving);
-                state.iconId = R.drawable.ic_qs_location_battery_saving;
                 break;
             case Settings.Secure.LOCATION_MODE_SENSORS_ONLY:
                 state.label = mContext.getString(R.string.quick_settings_location_gps_only_label);
                 state.contentDescription = mContext.getString(R.string.accessibility_quick_settings_location_gps_only);
-                state.iconId = mEnable;
                 break;
             case Settings.Secure.LOCATION_MODE_HIGH_ACCURACY:
                 state.label = mContext.getString(R.string.quick_settings_location_high_accuracy_label);
                 state.contentDescription = mContext.getString(R.string.accessibility_quick_settings_location_high_accuracy);
-                state.iconId = mEnable;
                 break;
             default:
                 state.label = mContext.getString(R.string.quick_settings_location_label);
@@ -189,6 +186,11 @@ public class LocationTile extends QSTile<QSTile.BooleanState> {
             mLocationDetailView.setLocationController(mController);
             setLocationMode(mController.getLocationCurrentState());
             return v;
+        }
+
+        @Override
+        public int getMetricsCategory() {
+            return MetricsLogger.QS_LOCATION;
         }
 
         public void setLocationEnabled(boolean enabled) {
