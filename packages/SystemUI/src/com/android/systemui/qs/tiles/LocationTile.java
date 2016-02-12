@@ -85,7 +85,6 @@ public class LocationTile extends QSTile<QSTile.BooleanState> {
     @Override
     protected void handleLongClick() {
         final boolean wasEnabled = (Boolean) mState.value;
-        MetricsLogger.action(mContext, getMetricsCategory(), wasEnabled);
         if(mController.setLocationEnabled(wasEnabled)) {
             showDetail(true);
         } else {
@@ -131,10 +130,10 @@ public class LocationTile extends QSTile<QSTile.BooleanState> {
         }
     }
 
-    //@Override
-    //public int getMetricsCategory() {
-    //    return MetricsLogger.QS_LOCATION;
-    //}
+    @Override
+    public int getMetricsCategory() {
+        return MetricsLogger.QS_LOCATION;
+    }
 
     @Override
     protected String composeChangeAnnouncement() {
