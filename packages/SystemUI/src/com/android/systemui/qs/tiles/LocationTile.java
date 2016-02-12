@@ -112,7 +112,7 @@ public class LocationTile extends QSTile<QSTile.BooleanState> {
             case Settings.Secure.LOCATION_MODE_BATTERY_SAVING:
                 state.label = mContext.getString(R.string.quick_settings_location_battery_saving_label);
                 state.contentDescription = mContext.getString(R.string.accessibility_quick_settings_location_battery_saving);
-                state.icon = R.drawable.ic_qs_location_battery_saving;
+                state.icon = ResourceIcon.get(R.drawable.ic_qs_location_battery_saving);
                 break;
             case Settings.Secure.LOCATION_MODE_SENSORS_ONLY:
                 state.label = mContext.getString(R.string.quick_settings_location_gps_only_label);
