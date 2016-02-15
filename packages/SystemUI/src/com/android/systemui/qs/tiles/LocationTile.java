@@ -164,6 +164,11 @@ public class LocationTile extends QSTile<QSTile.BooleanState> {
     }
 
     @Override
+    public int getMetricsCategory() {
+        return MetricsLogger.QS_LOCATION;
+    }
+
+    @Override
     protected String composeChangeAnnouncement() {
         switch (mController.getLocationCurrentState()) {
             case Settings.Secure.LOCATION_MODE_OFF:
