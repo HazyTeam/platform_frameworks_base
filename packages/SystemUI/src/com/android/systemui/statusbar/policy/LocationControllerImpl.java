@@ -55,7 +55,6 @@ public class LocationControllerImpl extends BroadcastReceiver implements Locatio
     private StatusBarManager mStatusBarManager;
 
     private boolean mAreActiveLocationRequests;
-
     private int mLastActiveMode;
 
     private ArrayList<LocationSettingsChangeCallback> mSettingsChangeCallbacks =
