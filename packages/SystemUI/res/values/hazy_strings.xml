@@ -76,5 +76,7 @@
     <string name="quick_settings_screenshot_label">Screenshot</string>
     <!-- Sound QS Tile -->
     <string name="quick_settings_sound_label">Sound</string>
+    <string name="quick_settings_sound_label_vibrate">Vibrate</string>
+    <string name="quick_settings_sound_label_silent">Silent</string>
 
 </resources>
