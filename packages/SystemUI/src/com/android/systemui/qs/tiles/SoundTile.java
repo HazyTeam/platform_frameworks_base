@@ -105,16 +105,18 @@ public class SoundTile extends QSTile<QSTile.State> {
     @Override
     protected void handleUpdateState(State state, Object arg) {
         state.visible = true;
-        state.label = mContext.getString(R.string.quick_settings_sound_label);
         switch (mAudioManager.getRingerModeInternal()) {
             case AudioManager.RINGER_MODE_NORMAL:
                 state.icon = ResourceIcon.get(R.drawable.ic_qs_ringer_audible);
+                state.label = mContext.getString(R.string.quick_settings_sound_label);
                 break;
             case AudioManager.RINGER_MODE_VIBRATE:
                 state.icon = ResourceIcon.get(R.drawable.ic_qs_ringer_vibrate);
+                state.label = mContext.getString(R.string.quick_settings_sound_label_vibrate);
                 break;
             case AudioManager.RINGER_MODE_SILENT:
                 state.icon = ResourceIcon.get(R.drawable.ic_qs_ringer_silent);
+                state.label = mContext.getString(R.string.quick_settings_sound_label_silent);
                 break;
             default:
                 break;
