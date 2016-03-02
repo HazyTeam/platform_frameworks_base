@@ -330,6 +330,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private long mKeyguardFadingAwayDelay;
     private long mKeyguardFadingAwayDuration;
 
+    private final Object mLock = new Object();
+
+    // Switch last app
+    boolean mSwitchLastApp;
+
     int mKeyguardMaxNotificationCount;
 
     boolean mExpandedVisible;
@@ -375,11 +380,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SWITCH_LAST_APP), false, this,
+                    UserHandle.USER_ALL);
+            updateSettings();
             update();
         }
 
         @Override
         public void onChange(boolean selfChange) {
+            updateSettings();
             update();
         }
 
@@ -4054,7 +4064,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     // won't be together, so send the standard long-press action.
                     sendBackLongPress = true;
                 } else if ((v.getId() == R.id.recent_apps)) {
-                    hijackRecentsLongPress = true;
+                    if (mSwitchLastApp) {
+                        hijackRecentsLongPress = true;
+                    }
                 }
                 mLastLockToAppLongPress = time;
             } else {
@@ -4062,7 +4074,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 if (v.getId() == R.id.back) {
                     sendBackLongPress = true;
                 } else if (v.getId() == R.id.recent_apps) {
-                    hijackRecentsLongPress = true;
+                    if (mSwitchLastApp) {
+                        hijackRecentsLongPress = true;
+                    }
                 } else if (isAccessiblityEnabled && activityManager.isInLockTaskMode()) {
                     // When in accessibility mode a long press that is recents (not back)
                     // should stop lock task.
@@ -4413,6 +4427,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         break;
                 }
             }
+        }
+    }
+
+    public void updateSettings() {
+        ContentResolver resolver = mContext.getContentResolver();
+        boolean updateRotation = false;
+        synchronized (mLock) {
+            mSwitchLastApp = (Settings.System.getIntForUser(resolver,
+                    Settings.System.SWITCH_LAST_APP, 1,
+                    UserHandle.USER_CURRENT) != 0);
         }
     }
 }
