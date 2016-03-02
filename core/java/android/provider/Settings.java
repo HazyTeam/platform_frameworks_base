@@ -292,7 +292,6 @@ public final class Settings {
      * Input: Nothing.
      * <p>
      * Output: Nothing.
-
      */
     @SdkConstant(SdkConstantType.ACTIVITY_INTENT_ACTION)
     public static final String ACTION_WIFI_SETTINGS =
@@ -3431,6 +3430,12 @@ public final class Settings {
          * @hide
          */
         public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
+
+        /**
+         * Longpress recent button to switch last app
+         * @hide
+         */
+        public static final String SWITCH_LAST_APP = "switch_last_app";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
