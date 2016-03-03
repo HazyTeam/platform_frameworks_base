@@ -23,6 +23,7 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.ActivityManager;
 import android.app.StatusBarManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
@@ -372,13 +373,11 @@ public class NotificationPanelView extends PanelView implements
 
     @Override
     public void onAttachedToWindow() {
-        mSecureCameraLaunchManager.create();
         mSettingsObserver.observe();
     }
 
     @Override
     public void onDetachedFromWindow() {
-        mSecureCameraLaunchManager.destroy();
         mSettingsObserver.unobserve();
     }
 
@@ -2493,6 +2492,7 @@ public class NotificationPanelView extends PanelView implements
         ActivityManager am = getContext().getSystemService(ActivityManager.class);
         List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
         return !tasks.isEmpty() && pkgName.equals(tasks.get(0).topActivity.getPackageName());
+    }
 
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
