@@ -155,4 +155,15 @@ public class TunerFragment extends PreferenceFragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private final class SettingObserver extends ContentObserver {
+        public SettingObserver() {
+            super(new Handler());
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri, int userId) {
+            super.onChange(selfChange, uri, userId);
+        }
+    }
 }
