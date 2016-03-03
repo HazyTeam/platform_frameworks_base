@@ -194,7 +194,6 @@
                   android:theme="@android:style/Theme.Material.Settings"
                   android:label="@string/systemui_tuner_qs_title"
                   android:process=":tuner"
-                  android:parentActivityName="com.dirtyunicorns.dutweaks.DirtyTweaks"
                   android:exported="true">
             <intent-filter>
                 <action android:name="com.android.settings.action.EXTRA_SETTINGS" />
