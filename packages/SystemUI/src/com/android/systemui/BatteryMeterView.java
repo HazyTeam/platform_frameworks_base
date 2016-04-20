@@ -165,8 +165,9 @@ public class BatteryMeterView extends View implements DemoMode,
 
     private ContentObserver mObserver = new ContentObserver(new Handler()) {
         public void onChange(boolean selfChange, Uri uri) {
-            mShowPercent = ENABLE_PERCENT && 0 != Settings.System.getInt(
-                getContext().getContentResolver(), Settings.System.STATUS_BAR_SHOW_BATTERY_PERCENT, 0);
+            mShowPercent = ENABLE_PERCENT && 1 == Settings.System.getInt(
+                    getContext().getContentResolver(),
+                    Settings.System.STATUS_BAR_SHOW_BATTERY_PERCENT, 0);
             postInvalidate();
         }
     };
@@ -185,7 +186,7 @@ public class BatteryMeterView extends View implements DemoMode,
         }
         mBatteryController.addStateChangedCallback(this);
         getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
-            "status_bar_show_battery_percent"), false, mObserver);
+                "status_bar_show_battery_percent"), false, mObserver);
     }
 
     @Override
@@ -224,7 +225,8 @@ public class BatteryMeterView extends View implements DemoMode,
         levels.recycle();
         colors.recycle();
         atts.recycle();
-        updateShowPercent();
+        mShowPercent = ENABLE_PERCENT && 1 == Settings.System.getInt(
+                context.getContentResolver(), "status_bar_show_battery_percent", 0);
         mWarningString = context.getString(R.string.battery_meter_very_low_overlay_symbol);
         mCriticalLevel = mContext.getResources().getInteger(
                 com.android.internal.R.integer.config_criticalBatteryWarningLevel);
