@@ -23,6 +23,9 @@ import android.util.EventLog;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.GestureDetector;
+import android.os.PowerManager;
+import android.provider.Settings;
 
 import com.android.systemui.DejankUtils;
 import com.android.systemui.EventLogTags;
@@ -146,7 +149,6 @@ public class PhoneStatusBarView extends PanelBar {
                         barConsumedEvent ? 1 : 0);
             }
         }
-
         return barConsumedEvent || super.onTouchEvent(event);
     }
 
