@@ -3451,6 +3451,12 @@ public final class Settings {
         public static final String SWITCH_LAST_APP = "switch_last_app";
 
         /**
+         * One Hand Mode
+         * @hide
+         */
+        public static final String ONE_HAND_MODE = "one_hand_mode";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
