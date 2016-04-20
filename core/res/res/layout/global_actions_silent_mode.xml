@@ -27,20 +27,20 @@
         android:layout_height="match_parent"
         android:background="?android:attr/actionBarItemBackground"
         android:contentDescription="@string/silent_mode_silent"
+        android:layout_marginLeft="26dp"
         android:focusable="true"
         >
         <ImageView
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
             android:layout_gravity="center"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="0dp"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="6dp"
-            android:src="@drawable/ic_audio_ring_notif_mute"
-            android:scaleType="center"
+            android:src="@drawable/ic_audio_ring_notif_mute_alpha"
             android:duplicateParentState="true"
-            android:background="@drawable/silent_mode_indicator"
+            android:background="@drawable/silent_mode_indicator_alpha"
             />
     </LinearLayout>
     <!-- Spacer -->
@@ -58,17 +58,16 @@
         android:focusable="true"
         >
         <ImageView
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
             android:layout_gravity="center"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="6dp"
-            android:src="@drawable/ic_audio_ring_notif_vibrate"
-            android:scaleType="center"
+            android:src="@drawable/ic_audio_ring_notif_vibrate_alpha"
             android:duplicateParentState="true"
-            android:background="@drawable/silent_mode_indicator"
+            android:background="@drawable/silent_mode_indicator_alpha"
             />
     </LinearLayout>
 
@@ -84,20 +83,20 @@
         android:layout_height="match_parent"
         android:background="?android:attr/actionBarItemBackground"
         android:contentDescription="@string/silent_mode_ring"
+        android:layout_marginRight="26dp"
         android:focusable="true"
         >
         <ImageView
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
             android:layout_gravity="center"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="12dp"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="6dp"
-            android:src="@drawable/ic_audio_ring_notif"
-            android:scaleType="center"
+            android:src="@drawable/ic_audio_ring_notif_alpha"
             android:duplicateParentState="true"
-            android:background="@drawable/silent_mode_indicator"
+            android:background="@drawable/silent_mode_indicator_alpha"
             />
     </LinearLayout>
 </LinearLayout>
