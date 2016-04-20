@@ -43,7 +43,7 @@ public class CellularTile extends QSTile<QSTile.SignalState> {
 
     private final NetworkController mController;
     private final MobileDataController mDataController;
-    private final CellularDetailAdapter mDetailAdapter;
+    public final CellularDetailAdapter mDetailAdapter;
 
     private final CellSignalCallback mSignalCallback = new CellSignalCallback();
 
@@ -79,9 +79,21 @@ public class CellularTile extends QSTile<QSTile.SignalState> {
     }
 
     @Override
-    protected void handleClick() {
+    public void handleClick() {
         MetricsLogger.action(mContext, getMetricsCategory());
         if (mDataController.isMobileDataSupported()) {
+            if (mDataController.isMobileDataEnabled() != true) {
+                mDataController.setMobileDataEnabled(true);
+            } else {
+                mDataController.setMobileDataEnabled(false);
+            }
+        }
+    }
+
+    @Override
+    protected void handleLongClick() {
+        MetricsLogger.action(mContext, getMetricsCategory());
+        if (mDataController.isMobileDataEnabled()) {
             showDetail(true);
         } else {
             mHost.startActivityDismissingKeyguard(CELLULAR_SETTINGS);
@@ -213,7 +225,7 @@ public class CellularTile extends QSTile<QSTile.SignalState> {
         }
     };
 
-    private final class CellularDetailAdapter implements DetailAdapter {
+    public final class CellularDetailAdapter implements DetailAdapter {
 
         @Override
         public int getTitle() {
