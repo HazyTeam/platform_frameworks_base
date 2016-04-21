@@ -1433,7 +1433,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mDeskDockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
  
-        mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         mPowerManager = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
         mBroadcastWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 "PhoneWindowManager.mBroadcastWakeLock");
@@ -3094,23 +3093,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
  
         // Let the application handle the key.
         return 0;
-    }
- 
-    private void invokeSearchOverlay(KeyEvent event) {
-        String intentString = "com.google.android.googlequicksearchbox.TEXT_ASSIST";
- 
-        // If we're in GEL, use the GEL search box. Otherwise, use the search overlay.
-        final List<ActivityManager.RecentTaskInfo> tasks =
-                mActivityManager.getRecentTasksForUser(
-                        1, ActivityManager.RECENT_WITH_EXCLUDED, UserHandle.USER_CURRENT_OR_SELF);
-        if (tasks != null && !tasks.isEmpty()) {
-            if (tasks.get(0).stackId == ActivityStackSupervisor.HOME_STACK_ID) {
-                intentString = "android.search.action.GLOBAL_SEARCH";
-            }
-        }
- 
-        Intent searchIntent = new Intent(intentString);
-        startActivityAsUser(searchIntent, UserHandle.CURRENT_OR_SELF);
     }
 
     /** {@inheritDoc} */
@@ -5311,15 +5293,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
                 break;
             }
- 
-            case KeyEvent.KEYCODE_SOFT_SLEEP: {
-                result &= ~ACTION_PASS_TO_USER;
-                isWakeKey = false;
-                if (!down) {
-                    mPowerManagerInternal.setUserInactiveOverrideFromWindowManager();
-                }
-                break;
-            }
 
             case KeyEvent.KEYCODE_SOFT_SLEEP: {
                 result &= ~ACTION_PASS_TO_USER;
@@ -6858,14 +6831,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             tmpVisibility &= ~PolicyControl.adjustClearableFlags(win, View.SYSTEM_UI_CLEARABLE_FLAGS);
         }
         tmpVisibility = updateLightStatusBarLw(tmpVisibility);
-        boolean topWindowWasKeyguard = mTopWindowIsKeyguard;
-        mTopWindowIsKeyguard = (win.getAttrs().privateFlags & PRIVATE_FLAG_KEYGUARD) != 0;
-        if (topWindowWasKeyguard && !mTopWindowIsKeyguard
-                && (tmpVisibility & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0) {
-            mStatusBarController.showTransient();
-            tmpVisibility |= View.STATUS_BAR_TRANSIENT;
-            mWindowManagerFuncs.addSystemUIVisibilityFlag(View.STATUS_BAR_TRANSIENT);
-        }
         final int visibility = updateSystemBarsLw(win, mLastSystemUiFlags, tmpVisibility);
         final int diff = visibility ^ mLastSystemUiFlags;
         final boolean needsMenu = win.getNeedsMenuLw(mTopFullscreenOpaqueWindowState);
