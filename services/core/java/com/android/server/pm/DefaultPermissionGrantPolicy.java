@@ -675,6 +675,7 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(vendingPackage, PHONE_PERMISSIONS, userId);
                 grantRuntimePermissionsLPw(vendingPackage, LOCATION_PERMISSIONS, userId);
                 grantRuntimePermissionsLPw(vendingPackage, SMS_PERMISSIONS, userId);
+            }
             
             // Android Wear Home
             if (mService.hasSystemFeature(PackageManager.FEATURE_WATCH)) {
