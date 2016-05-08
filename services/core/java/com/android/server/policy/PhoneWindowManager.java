@@ -1770,7 +1770,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             // OneHandMode: settings
             mOneHandMode = (Settings.System.getIntForUser(resolver,
                     Settings.System.ONE_HAND_MODE, 1,
-                    UserHandle.USER_CURRENT) != 0);
+                    UserHandle.USER_CURRENT) == 1);
  
             // Configure wake gesture.
             boolean wakeGestureEnabledSetting = Settings.Secure.getIntForUser(resolver,
