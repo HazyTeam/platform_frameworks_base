@@ -654,14 +654,6 @@ public abstract class ConnectionService extends Service {
             }
         }
 
-        @Override
-        public void onConnectionEvent(Connection connection, String event) {
-            String id = mIdByConnection.get(connection);
-            if (id != null) {
-                mAdapter.onConnectionEvent(id, event);
-            }
-        }
-
         public void onCdmaConnectionTimeReset(Connection c) {
             String id = mIdByConnection.get(c);
             mAdapter.resetCdmaConnectionTime(id);

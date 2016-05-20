@@ -477,8 +477,6 @@ public abstract class Connection extends Conferenceable {
         public void onConferenceStarted() {}
         public void onConferenceMergeFailed(Connection c) {}
         public void onExtrasChanged(Connection c, Bundle extras) {}
-        /** @hide */
-        public void onConnectionEvent(Connection c, String event) {}
         public void onCdmaConnectionTimeReset(Connection c) {}
     }
 
@@ -2009,18 +2007,6 @@ public abstract class Connection extends Conferenceable {
     protected void notifyConferenceStarted() {
         for (Listener l : mListeners) {
             l.onConferenceStarted();
-        }
-    }
-
-    /**
-     * Sends a connection event to Telecom.
-     *
-     * @param event The connection event.
-     * @hide
-     */
-    protected void sendConnectionEvent(String event) {
-        for (Listener l : mListeners) {
-            l.onConnectionEvent(this, event);
         }
     }
 }
