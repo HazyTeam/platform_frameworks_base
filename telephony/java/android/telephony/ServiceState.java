@@ -254,29 +254,6 @@ public class ServiceState implements Parcelable {
     }
 
     /**
-     * get String description of roaming type
-     * @hide
-     */
-    public static final String getRoamingLogString(int roamingType) {
-        switch (roamingType) {
-            case ROAMING_TYPE_NOT_ROAMING:
-                return "home";
-
-            case ROAMING_TYPE_UNKNOWN:
-                return "roaming";
-
-            case ROAMING_TYPE_DOMESTIC:
-                return "Domestic Roaming";
-
-            case ROAMING_TYPE_INTERNATIONAL:
-                return "International Roaming";
-
-            default:
-                return "UNKNOWN";
-        }
-    }
-
-    /**
      * Create a new ServiceState from a intent notifier Bundle
      *
      * This method is used by PhoneStateIntentReceiver and maybe by
