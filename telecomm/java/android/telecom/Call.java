@@ -207,6 +207,12 @@ public final class Call {
         public static final int CAPABILITY_CAN_PAUSE_VIDEO = 0x00100000;
 
         /**
+         * Call has voice privacy capability.
+         * @hide
+         */
+        public static final int CAPABILITY_VOICE_PRIVACY = 0x00400000;
+
+        /**
          * Call sends responses through connection.
          * @hide
          */
