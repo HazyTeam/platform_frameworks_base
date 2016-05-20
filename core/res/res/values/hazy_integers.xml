@@ -19,4 +19,7 @@
     <!-- Default for Settings.Global.WIFI_IDLE_MS (15 minutes) -->
     <integer name="def_wifi_idle_ms">900000</integer>
 
+    <!-- Wi-Fi turn off notification -->
+    <java-symbol type="string" name="notify_turn_wifi_off_title" />
+
 </resources>
