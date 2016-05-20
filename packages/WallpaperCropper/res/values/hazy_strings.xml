@@ -23,9 +23,6 @@
     <!-- Wi-Fi turn off notification -->
     <java-symbol type="string" name="notify_turn_wifi_off_title" />
 
-<<<<<<< HEAD:packages/WallpaperCropper/res/values/hazy_strings.xml
     <!-- Wi-Fi idle time default -->
     <java-symbol type="integer" name="def_wifi_idle_ms" />
-=======
->>>>>>> 45af7f5... framework: add "Turn wifi off" string:core/res/res/values/turbo_symbols.xml
 </resources>
