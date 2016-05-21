@@ -1,4 +1,7 @@
 /*
+ * Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
+ * Not a Contribution.
+ *
  * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +31,7 @@ import android.os.Parcelable;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
+import android.os.SystemProperties;
 import android.os.UserManager;
 import android.util.ArrayMap;
 
@@ -103,9 +107,18 @@ public class AppOpsManager {
      */
     public static final int MODE_DEFAULT = 3;
 
+    /**
+     * @hide Result from {@link #checkOp}, {@link #noteOp}, {@link #startOp}:
+     * AppOps Service should show a dialog box on screen to get user
+     * permission.
+     */
+    public static final int MODE_ASK = 4;
+
     // when adding one of these:
     //  - increment _NUM_OP
-    //  - add rows to sOpToSwitch, sOpToString, sOpNames, sOpPerms, sOpDefaultMode
+    //  - add rows to sOpToSwitch, sOpToString, sOpNames, sOpPerms, sOpDefaultMode, sOpDefaultStrictMode,
+    //    sOpToOpString, sOpStrictMode.
+    //  - add descriptive strings to frameworks/base/core/res/res/values/config.xml
     //  - add descriptive strings to Settings/res/values/arrays.xml
     //  - add the op to the appropriate template in AppOpsState.OpsTemplate (settings app)
 
@@ -237,8 +250,9 @@ public class AppOpsManager {
     public static final int OP_TURN_SCREEN_ON = 61;
     /** @hide Get device accounts. */
     public static final int OP_GET_ACCOUNTS = 62;
+    /** @hide Wifi state change **/
+    public static final int OP_WIFI_CHANGE = 63;
     /** @hide */
-    public static final int _NUM_OP = 63;
     public static final int OP_BLUETOOTH_CHANGE = 64;
     /** @hide */
     public static final int _NUM_OP = 65;
@@ -994,7 +1008,6 @@ public class AppOpsManager {
         false,    // GET_ACCOUNTS
         true,     // OP_WIFI_CHANGE
         true,     // OP_BLUETOOTH_CHANGE
->>>>>>> be26bfc... AppOps: Add Bluetooth enable control into AppOps
     };
 
     /**
@@ -1082,6 +1095,8 @@ public class AppOpsManager {
      */
     private static HashMap<String, Integer> sPermToOp = new HashMap<>();
 
+    private static HashMap<String, Integer> sNameToOp = new HashMap<String, Integer>();
+
     static {
         if (sOpToSwitch.length != _NUM_OP) {
             throw new IllegalStateException("sOpToSwitch length " + sOpToSwitch.length
@@ -1103,6 +1118,10 @@ public class AppOpsManager {
             throw new IllegalStateException("sOpDefaultMode length " + sOpDefaultMode.length
                     + " should be " + _NUM_OP);
         }
+        if (sOpDefaultStrictMode.length != _NUM_OP) {
+            throw new IllegalStateException("sOpDefaultStrictMode length " + sOpDefaultStrictMode.length
+                    + " should be " + _NUM_OP);
+        }
         if (sOpDisableReset.length != _NUM_OP) {
             throw new IllegalStateException("sOpDisableReset length " + sOpDisableReset.length
                     + " should be " + _NUM_OP);
@@ -1115,6 +1134,10 @@ public class AppOpsManager {
             throw new IllegalStateException("sOpAllowSYstemRestrictionsBypass length "
                     + sOpRestrictions.length + " should be " + _NUM_OP);
         }
+        if (sOpStrictMode.length != _NUM_OP) {
+            throw new IllegalStateException("sOpStrictMode length "
+                    + sOpStrictMode.length + " should be " + _NUM_OP);
+        }
         for (int i=0; i<_NUM_OP; i++) {
             if (sOpToString[i] != null) {
                 sOpStrToOp.put(sOpToString[i], i);
@@ -1124,6 +1147,9 @@ public class AppOpsManager {
             if (sOpPerms[i] != null) {
                 sPermToOp.put(sOpPerms[i], i);
             }
+        }
+        for (int i=0; i<_NUM_OP; i++) {
+            sNameToOp.put(sOpNames[i], i);
         }
     }
 
@@ -1154,6 +1180,15 @@ public class AppOpsManager {
             }
         }
         throw new IllegalArgumentException("Unknown operation string: " + op);
+    }
+
+    /**
+     * Map a non-localized name for the operation back to the Op number
+     * @hide
+     */
+    public static int nameToOp(String name) {
+        Integer val = sNameToOp.get(name);
+        return val != null ? val : OP_NONE;
     }
 
     /**
@@ -1194,7 +1229,9 @@ public class AppOpsManager {
      * Retrieve the default mode for the operation.
      * @hide
      */
-    public static int opToDefaultMode(int op) {
+    public static int opToDefaultMode(int op, boolean isStrict) {
+        if (isStrict)
+            return sOpDefaultStrictMode[op];
         return sOpDefaultMode[op];
     }
 
@@ -1281,9 +1318,11 @@ public class AppOpsManager {
         private final int mDuration;
         private final int mProxyUid;
         private final String mProxyPackageName;
+        private final int mAllowedCount;
+        private final int mIgnoredCount;
 
         public OpEntry(int op, int mode, long time, long rejectTime, int duration,
-                int proxyUid, String proxyPackage) {
+                       int proxyUid, String proxyPackage, int allowedCount, int ignoredCount) {
             mOp = op;
             mMode = mode;
             mTime = time;
@@ -1291,6 +1330,8 @@ public class AppOpsManager {
             mDuration = duration;
             mProxyUid = proxyUid;
             mProxyPackageName = proxyPackage;
+            mAllowedCount = allowedCount;
+            mIgnoredCount = ignoredCount;
         }
 
         public int getOp() {
@@ -1325,6 +1366,14 @@ public class AppOpsManager {
             return mProxyPackageName;
         }
 
+        public int getAllowedCount() {
+            return mAllowedCount;
+        }
+
+        public int getIgnoredCount() {
+            return mIgnoredCount;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -1339,6 +1388,8 @@ public class AppOpsManager {
             dest.writeInt(mDuration);
             dest.writeInt(mProxyUid);
             dest.writeString(mProxyPackageName);
+            dest.writeInt(mAllowedCount);
+            dest.writeInt(mIgnoredCount);
         }
 
         OpEntry(Parcel source) {
@@ -1349,6 +1400,8 @@ public class AppOpsManager {
             mDuration = source.readInt();
             mProxyUid = source.readInt();
             mProxyPackageName = source.readString();
+            mAllowedCount = source.readInt();
+            mIgnoredCount = source.readInt();
         }
 
         public static final Creator<OpEntry> CREATOR = new Creator<OpEntry>() {
@@ -1920,5 +1973,76 @@ public class AppOpsManager {
     /** @hide */
     public void finishOp(int op) {
         finishOp(op, Process.myUid(), mContext.getOpPackageName());
+    }
+
+    /** @hide */
+    public static boolean isStrictEnable() {
+        return SystemProperties.getBoolean("persist.sys.strict_op_enable", false);
+    }
+
+    /**
+     * Check if op in strict mode
+     * @hide
+     */
+    public static boolean isStrictOp(int code) {
+        return sOpStrictMode[code];
+    }
+
+
+    /** @hide */
+    public static int stringToMode(String permission) {
+        if ("allowed".equalsIgnoreCase(permission)) {
+            return AppOpsManager.MODE_ALLOWED;
+        } else if ("ignored".equalsIgnoreCase(permission)) {
+            return AppOpsManager.MODE_IGNORED;
+        } else if ("ask".equalsIgnoreCase(permission)) {
+            return AppOpsManager.MODE_ASK;
+        }
+        return AppOpsManager.MODE_ERRORED;
+    }
+
+    /** @hide */
+    public static int stringOpToOp (String op) {
+        Integer val = sOpStrToOp.get(op);
+        if (val == null) {
+            val = OP_NONE;
+        }
+        return val;
+    }
+
+    /** @hide */
+    public boolean isControlAllowed(int op, String packageName) {
+        boolean isShow = true;
+        try {
+            isShow = mService.isControlAllowed(op, packageName);
+        } catch (RemoteException e) {
+        }
+        return isShow;
+    }
+
+    /** @hide */
+    public boolean getPrivacyGuardSettingForPackage(int uid, String packageName) {
+        try {
+            return mService.getPrivacyGuardSettingForPackage(uid, packageName);
+        } catch (RemoteException e) {
+        }
+        return false;
+    }
+
+    /** @hide */
+    public void setPrivacyGuardSettingForPackage(int uid, String packageName,
+            boolean state) {
+        try {
+            mService.setPrivacyGuardSettingForPackage(uid, packageName, state);
+        } catch (RemoteException e) {
+        }
+    }
+
+    /** @hide */
+    public void resetCounters() {
+        try {
+            mService.resetCounters();
+        } catch (RemoteException e) {
+        }
     }
 }
