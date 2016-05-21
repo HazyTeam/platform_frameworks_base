@@ -43,8 +43,7 @@ interface IAppOpsService {
     void resetAllModes(int reqUserId, String reqPackageName);
     int checkAudioOperation(int code, int usage, int uid, String packageName);
     void setAudioRestriction(int code, int usage, int uid, int mode, in String[] exceptionPackages);
-
+    
     void setUserRestrictions(in Bundle restrictions, int userHandle);
     void removeUser(int userHandle);
-    boolean isControlAllowed(int code, String packageName);
 }
