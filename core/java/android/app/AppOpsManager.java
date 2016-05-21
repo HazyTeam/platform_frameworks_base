@@ -1,7 +1,4 @@
 /*
- * Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
- * Not a Contribution.
- *
  * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package android.app;
-
 import android.Manifest;
 import android.annotation.SystemApi;
 import android.app.usage.UsageStatsManager;
@@ -31,17 +26,13 @@ import android.os.Parcelable;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
-import android.os.SystemProperties;
 import android.os.UserManager;
 import android.util.ArrayMap;
-
 import com.android.internal.app.IAppOpsCallback;
 import com.android.internal.app.IAppOpsService;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 /**
  * API for interacting with "application operation" tracking.
  *
@@ -72,56 +63,39 @@ public class AppOpsManager {
      * MODE_ERRORED (throw a SecurityException back to the caller; the normal operation calls
      * will do this for you).
      */
-
     final Context mContext;
     final IAppOpsService mService;
     final ArrayMap<OnOpChangedListener, IAppOpsCallback> mModeWatchers
             = new ArrayMap<OnOpChangedListener, IAppOpsCallback>();
-
     static IBinder sToken;
-
     /**
      * Result from {@link #checkOp}, {@link #noteOp}, {@link #startOp}: the given caller is
      * allowed to perform the given operation.
      */
     public static final int MODE_ALLOWED = 0;
-
     /**
      * Result from {@link #checkOp}, {@link #noteOp}, {@link #startOp}: the given caller is
      * not allowed to perform the given operation, and this attempt should
      * <em>silently fail</em> (it should not cause the app to crash).
      */
     public static final int MODE_IGNORED = 1;
-
     /**
      * Result from {@link #checkOpNoThrow}, {@link #noteOpNoThrow}, {@link #startOpNoThrow}: the
      * given caller is not allowed to perform the given operation, and this attempt should
      * cause it to have a fatal error, typically a {@link SecurityException}.
      */
     public static final int MODE_ERRORED = 2;
-
     /**
      * Result from {@link #checkOp}, {@link #noteOp}, {@link #startOp}: the given caller should
      * use its default security check.  This mode is not normally used; it should only be used
      * with appop permissions, and callers must explicitly check for it and deal with it.
      */
     public static final int MODE_DEFAULT = 3;
-
-    /**
-     * @hide Result from {@link #checkOp}, {@link #noteOp}, {@link #startOp}:
-     * AppOps Service should show a dialog box on screen to get user
-     * permission.
-     */
-    public static final int MODE_ASK = 4;
-
     // when adding one of these:
     //  - increment _NUM_OP
-    //  - add rows to sOpToSwitch, sOpToString, sOpNames, sOpPerms, sOpDefaultMode, sOpDefaultStrictMode,
-    //    sOpToOpString, sOpStrictMode.
-    //  - add descriptive strings to frameworks/base/core/res/res/values/config.xml
+    //  - add rows to sOpToSwitch, sOpToString, sOpNames, sOpPerms, sOpDefaultMode
     //  - add descriptive strings to Settings/res/values/arrays.xml
     //  - add the op to the appropriate template in AppOpsState.OpsTemplate (settings app)
-
     /** @hide No operation specified. */
     public static final int OP_NONE = -1;
     /** @hide Access to coarse location information. */
@@ -250,13 +224,8 @@ public class AppOpsManager {
     public static final int OP_TURN_SCREEN_ON = 61;
     /** @hide Get device accounts. */
     public static final int OP_GET_ACCOUNTS = 62;
-    /** @hide Wifi state change **/
-    public static final int OP_WIFI_CHANGE = 63;
     /** @hide */
-    public static final int OP_BLUETOOTH_CHANGE = 64;
-    /** @hide */
-    public static final int _NUM_OP = 65;
-
+    public static final int _NUM_OP = 63;
     /** Access to coarse location information. */
     public static final String OPSTR_COARSE_LOCATION = "android:coarse_location";
     /** Access to fine location information. */
@@ -353,12 +322,6 @@ public class AppOpsManager {
     /** @hide Get device accounts. */
     public static final String OPSTR_GET_ACCOUNTS
             = "android:get_accounts";
-    /** @hide **/
-    private static final String OPSTR_WIFI_CHANGE =
-            "android:wifi_change";
-    private static final String OPSTR_BLUETOOTH_CHANGE =
-            "android:bluetooth_change";
-
     /**
      * This maps each operation to the operation that serves as the
      * switch to determine whether it is allowed.  Generally this is
@@ -431,10 +394,7 @@ public class AppOpsManager {
             OP_WRITE_EXTERNAL_STORAGE,
             OP_TURN_SCREEN_ON,
             OP_GET_ACCOUNTS,
-            OP_WIFI_CHANGE,
-            OP_BLUETOOTH_CHANGE,
     };
-
     /**
      * This maps each operation to the public string constant for it.
      * If it doesn't have a public string constant, it maps to null.
@@ -502,11 +462,8 @@ public class AppOpsManager {
             OPSTR_READ_EXTERNAL_STORAGE,
             OPSTR_WRITE_EXTERNAL_STORAGE,
             null,
-            OPSTR_GET_ACCOUNTS,
-            OPSTR_WIFI_CHANGE,
-            OPSTR_BLUETOOTH_CHANGE,
+            OPSTR_GET_ACCOUNTS
     };
-
     /**
      * This provides a simple name for each operation to be used
      * in debug output.
@@ -575,10 +532,7 @@ public class AppOpsManager {
             "WRITE_EXTERNAL_STORAGE",
             "TURN_ON_SCREEN",
             "GET_ACCOUNTS",
-            "WIFI_CHANGE",
-            "BLUETOOTH_CHANGE",
     };
-
     /**
      * This optionally maps a permission to an operation.  If there
      * is no permission associated with an operation, it is null.
@@ -646,11 +600,8 @@ public class AppOpsManager {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             null, // no permission for turning the screen on
-            Manifest.permission.GET_ACCOUNTS,
-            Manifest.permission.CHANGE_WIFI_STATE,
-            Manifest.permission.BLUETOOTH,
+            Manifest.permission.GET_ACCOUNTS
     };
-
     /**
      * Specifies whether an Op should be restricted by a user restriction.
      * Each Op should be filled with a restriction string from UserManager or
@@ -720,10 +671,7 @@ public class AppOpsManager {
             null, // WRITE_EXTERNAL_STORAGE
             null, // TURN_ON_SCREEN
             null, // GET_ACCOUNTS
-            null, //WIFI_CHANGE
-            null, //BLUETOOTH_CHANGE
     };
-
     /**
      * This specifies whether each option should allow the system
      * (and system ui) to bypass the user restriction when active.
@@ -792,10 +740,7 @@ public class AppOpsManager {
             false, // WRITE_EXTERNAL_STORAGE
             false, // TURN_ON_SCREEN
             false, // GET_ACCOUNTS
-            false, // WIFI_CHANGE
-            false, // BLUETOOTH_CHANGE
     };
-
     /**
      * This specifies the default mode for each operation.
      */
@@ -863,151 +808,7 @@ public class AppOpsManager {
             AppOpsManager.MODE_ALLOWED,
             AppOpsManager.MODE_ALLOWED,  // OP_TURN_ON_SCREEN
             AppOpsManager.MODE_ALLOWED,
-            AppOpsManager.MODE_ALLOWED, // OP_WIFI_CHANGE
-            AppOpsManager.MODE_ASK,     // OP_BLUETOOTH_CHANGE
     };
-
-    /**
-     * This specifies the default mode for each strict operation.
-     */
-
-    private static int[] sOpDefaultStrictMode = new int[] {
-            AppOpsManager.MODE_ASK,     // OP_COARSE_LOCATION
-            AppOpsManager.MODE_ASK,     // OP_FINE_LOCATION
-            AppOpsManager.MODE_ASK,     // OP_GPS
-            AppOpsManager.MODE_ALLOWED, // OP_VIBRATE
-            AppOpsManager.MODE_ASK,     // OP_READ_CONTACTS
-            AppOpsManager.MODE_ASK,     // OP_WRITE_CONTACTS
-            AppOpsManager.MODE_ASK,     // OP_READ_CALL_LOG
-            AppOpsManager.MODE_ASK,     // OP_WRITE_CALL_LOG
-            AppOpsManager.MODE_ALLOWED, // OP_READ_CALENDAR
-            AppOpsManager.MODE_ALLOWED, // OP_WRITE_CALENDAR
-            AppOpsManager.MODE_ASK,     // OP_WIFI_SCAN
-            AppOpsManager.MODE_ALLOWED, // OP_POST_NOTIFICATION
-            AppOpsManager.MODE_ALLOWED, // OP_NEIGHBORING_CELLS
-            AppOpsManager.MODE_ASK,     // OP_CALL_PHONE
-            AppOpsManager.MODE_ASK,     // OP_READ_SMS
-            AppOpsManager.MODE_ASK,     // OP_WRITE_SMS
-            AppOpsManager.MODE_ASK,     // OP_RECEIVE_SMS
-            AppOpsManager.MODE_ALLOWED, // OP_RECEIVE_EMERGECY_SMS
-            AppOpsManager.MODE_ASK,     // OP_RECEIVE_MMS
-            AppOpsManager.MODE_ALLOWED, // OP_RECEIVE_WAP_PUSH
-            AppOpsManager.MODE_ASK,     // OP_SEND_SMS
-            AppOpsManager.MODE_ALLOWED, // OP_READ_ICC_SMS
-            AppOpsManager.MODE_ALLOWED, // OP_WRITE_ICC_SMS
-            AppOpsManager.MODE_ALLOWED, // OP_WRITE_SETTINGS
-            AppOpsManager.MODE_ALLOWED, // OP_SYSTEM_ALERT_WINDOW
-            AppOpsManager.MODE_ALLOWED, // OP_ACCESS_NOTIFICATIONS
-            AppOpsManager.MODE_ASK,     // OP_CAMERA
-            AppOpsManager.MODE_ASK,     // OP_RECORD_AUDIO
-            AppOpsManager.MODE_ALLOWED, // OP_PLAY_AUDIO
-            AppOpsManager.MODE_ALLOWED, // OP_READ_CLIPBOARD
-            AppOpsManager.MODE_ALLOWED, // OP_WRITE_CLIPBOARD
-            AppOpsManager.MODE_ALLOWED, // OP_TAKE_MEDIA_BUTTONS
-            AppOpsManager.MODE_ALLOWED, // OP_TAKE_AUDIO_FOCUS
-            AppOpsManager.MODE_ALLOWED, // OP_AUDIO_MASTER_VOLUME
-            AppOpsManager.MODE_ALLOWED, // OP_AUDIO_VOICE_VOLUME
-            AppOpsManager.MODE_ALLOWED, // OP_AUDIO_RING_VOLUME
-            AppOpsManager.MODE_ALLOWED, // OP_AUDIO_MEDIA_VOLUME
-            AppOpsManager.MODE_ALLOWED, // OP_AUDIO_ALARM_VOLUME
-            AppOpsManager.MODE_ALLOWED, // OP_AUDIO_NOTIFICATION_VOLUME
-            AppOpsManager.MODE_ALLOWED, // OP_AUDIO_BLUETOOTH_VOLUME
-            AppOpsManager.MODE_ALLOWED, // OP_WAKE_LOCK
-            AppOpsManager.MODE_ALLOWED, // OP_MONITOR_LOCATION
-            AppOpsManager.MODE_ASK,     // OP_MONITOR_HIGH_POWER_LOCATION
-            AppOpsManager.MODE_DEFAULT, // OP_GET_USAGE_STATS
-            AppOpsManager.MODE_ALLOWED, // OP_MUTE_MICROPHONE
-            AppOpsManager.MODE_ALLOWED, // OP_TOAST_WINDOW
-            AppOpsManager.MODE_IGNORED, // OP_PROJECT_MEDIA
-            AppOpsManager.MODE_IGNORED, // OP_ACTIVATE_VPN
-            AppOpsManager.MODE_ALLOWED, // OP WALLPAPER
-            AppOpsManager.MODE_ALLOWED, // OP_ASSIST_STRUCTURE
-            AppOpsManager.MODE_ALLOWED, // OP_ASSIST_SCREENSHOT
-            AppOpsManager.MODE_ALLOWED, // OP_READ_PHONE_STATE
-            AppOpsManager.MODE_ALLOWED, // OP_ADD_VOICEMAIL
-            AppOpsManager.MODE_ALLOWED, // OP_USE_SIP
-            AppOpsManager.MODE_ALLOWED, // OP_PROCESS_OUTGOING_CALLS
-            AppOpsManager.MODE_ALLOWED, // OP_USE_FINGERPRINT
-            AppOpsManager.MODE_ALLOWED, // OP_BODY_SENSORS
-            AppOpsManager.MODE_ALLOWED, // OP_READ_CELL_BROADCASTS
-            AppOpsManager.MODE_ERRORED, // OP_MOCK_LOCATION
-            AppOpsManager.MODE_ALLOWED, // OP_READ_EXTERNAL_STORAGE
-            AppOpsManager.MODE_ALLOWED, // OP_WRITE_EXTERNAL_STORAGE
-            AppOpsManager.MODE_ALLOWED, // OP_TURN_ON_SCREEN
-            AppOpsManager.MODE_ALLOWED, // OP_GET_ACCOUNTS
-            AppOpsManager.MODE_ASK,     // OP_WIFI_CHANGE
-            AppOpsManager.MODE_ASK,     // OP_BLUETOOTH_CHANGE
-    };
-
-    /**
-     * This specifies if operation is in strict mode.
-     */
-    private final static boolean[] sOpStrictMode = new boolean[] {
-        true,     // OP_COARSE_LOCATION
-        true,     // OP_FINE_LOCATION
-        true,     // OP_GPS
-        false,    // OP_VIBRATE
-        true,     // OP_READ_CONTACTS
-        true,     // OP_WRITE_CONTACTS
-        true,     // OP_READ_CALL_LOG
-        true,     // OP_WRITE_CALL_LOG
-        false,    // OP_READ_CALENDAR
-        false,    // OP_WRITE_CALENDAR
-        true,     // OP_WIFI_SCAN
-        false,    // OP_POST_NOTIFICATION
-        false,    // OP_NEIGHBORING_CELLS
-        true,     // OP_CALL_PHONE
-        true,     // OP_READ_SMS
-        true,     // OP_WRITE_SMS
-        false,    // OP_RECEIVE_SMS
-        false,    // OP_RECEIVE_EMERGECY_SMS
-        true,     // OP_RECEIVE_MMS
-        false,    // OP_RECEIVE_WAP_PUSH
-        true,     // OP_SEND_SMS
-        false,    // OP_READ_ICC_SMS
-        false,    // OP_WRITE_ICC_SMS
-        false,    // OP_WRITE_SETTINGS
-        false,    // OP_SYSTEM_ALERT_WINDOW
-        false,    // OP_ACCESS_NOTIFICATIONS
-        true,     // OP_CAMERA
-        true,     // OP_RECORD_AUDIO
-        false,    // OP_PLAY_AUDIO
-        false,    // OP_READ_CLIPBOARD
-        false,    // OP_WRITE_CLIPBOARD
-        false,    // OP_TAKE_MEDIA_BUTTONS
-        false,    // OP_TAKE_AUDIO_FOCUS
-        false,    // OP_AUDIO_MASTER_VOLUME
-        false,    // OP_AUDIO_VOICE_VOLUME
-        false,    // OP_AUDIO_RING_VOLUME
-        false,    // OP_AUDIO_MEDIA_VOLUME
-        false,    // OP_AUDIO_ALARM_VOLUME
-        false,    // OP_AUDIO_NOTIFICATION_VOLUME
-        false,    // OP_AUDIO_BLUETOOTH_VOLUME
-        false,    // OP_WAKE_LOCK
-        false,    // OP_MONITOR_LOCATION
-        true,     // OP_MONITOR_HIGH_POWER_LOCATION
-        false,    // OP_GET_USAGE_STATS
-        false,    // OP_MUTE_MICROPHONE
-        false,    // OP_TOAST_WINDOW
-        false,    // OP_PROJECT_MEDIA
-        false,    // OP_ACTIVATE_VPN
-        true,     // OP WALLPAPER
-        false,    //ASSIST_STRUCTURE
-        false,    //ASSIST_SCREENSHOT
-        false,    //READ_PHONE_STATE
-        false,    //ADD_VOICEMAIL
-        false,    // USE_SIP
-        false,    // PROCESS_OUTGOING_CALLS
-        false,    // USE_FINGERPRINT
-        false,    // BODY_SENSORS
-        false,    // READ_CELL_BROADCASTS
-        false,    // MOCK_LOCATION
-        true,     // READ_EXTERNAL_STORAGE
-        true,     // WRITE_EXTERNAL_STORAGE
-        false,    // TURN_ON_SCREEN
-        false,    // GET_ACCOUNTS
-    };
-
     /**
      * This specifies whether each option is allowed to be reset
      * when resetting all app preferences.  Disable reset for
@@ -1078,23 +879,16 @@ public class AppOpsManager {
             false,
             false,
             false,
-            false,
-            false,     // OP_WIFI_CHANGE
-            false,     // OP_BLUETOOTH_CHANGE
+            false
     };
-
     /**
      * Mapping from an app op name to the app op code.
      */
     private static HashMap<String, Integer> sOpStrToOp = new HashMap<>();
-
     /**
      * Mapping from a permission to the corresponding app op.
      */
     private static HashMap<String, Integer> sPermToOp = new HashMap<>();
-
-    private static HashMap<String, Integer> sNameToOp = new HashMap<String, Integer>();
-
     static {
         if (sOpToSwitch.length != _NUM_OP) {
             throw new IllegalStateException("sOpToSwitch length " + sOpToSwitch.length
@@ -1116,10 +910,6 @@ public class AppOpsManager {
             throw new IllegalStateException("sOpDefaultMode length " + sOpDefaultMode.length
                     + " should be " + _NUM_OP);
         }
-        if (sOpDefaultStrictMode.length != _NUM_OP) {
-            throw new IllegalStateException("sOpDefaultStrictMode length " + sOpDefaultStrictMode.length
-                    + " should be " + _NUM_OP);
-        }
         if (sOpDisableReset.length != _NUM_OP) {
             throw new IllegalStateException("sOpDisableReset length " + sOpDisableReset.length
                     + " should be " + _NUM_OP);
@@ -1132,10 +922,6 @@ public class AppOpsManager {
             throw new IllegalStateException("sOpAllowSYstemRestrictionsBypass length "
                     + sOpRestrictions.length + " should be " + _NUM_OP);
         }
-        if (sOpStrictMode.length != _NUM_OP) {
-            throw new IllegalStateException("sOpStrictMode length "
-                    + sOpStrictMode.length + " should be " + _NUM_OP);
-        }
         for (int i=0; i<_NUM_OP; i++) {
             if (sOpToString[i] != null) {
                 sOpStrToOp.put(sOpToString[i], i);
@@ -1146,11 +932,7 @@ public class AppOpsManager {
                 sPermToOp.put(sOpPerms[i], i);
             }
         }
-        for (int i=0; i<_NUM_OP; i++) {
-            sNameToOp.put(sOpNames[i], i);
-        }
     }
-
     /**
      * Retrieve the op switch that controls the given operation.
      * @hide
@@ -1158,7 +940,6 @@ public class AppOpsManager {
     public static int opToSwitch(int op) {
         return sOpToSwitch[op];
     }
-
     /**
      * Retrieve a non-localized name for the operation, for debugging output.
      * @hide
@@ -1167,7 +948,6 @@ public class AppOpsManager {
         if (op == OP_NONE) return "NONE";
         return op < sOpNames.length ? sOpNames[op] : ("Unknown(" + op + ")");
     }
-
     /**
      * @hide
      */
@@ -1179,16 +959,6 @@ public class AppOpsManager {
         }
         throw new IllegalArgumentException("Unknown operation string: " + op);
     }
-
-    /**
-     * Map a non-localized name for the operation back to the Op number
-     * @hide
-     */
-    public static int nameToOp(String name) {
-        Integer val = sNameToOp.get(name);
-        return val != null ? val : OP_NONE;
-    }
-
     /**
      * Retrieve the permission associated with an operation, or null if there is not one.
      * @hide
@@ -1196,7 +966,6 @@ public class AppOpsManager {
     public static String opToPermission(int op) {
         return sOpPerms[op];
     }
-
     /**
      * Retrieve the user restriction associated with an operation, or null if there is not one.
      * @hide
@@ -1204,7 +973,6 @@ public class AppOpsManager {
     public static String opToRestriction(int op) {
         return sOpRestrictions[op];
     }
-
     /**
      * Retrieve the app op code for a permission, or null if there is not one.
      * @hide
@@ -1213,7 +981,6 @@ public class AppOpsManager {
         Integer boxedOpCode = sPermToOp.get(permission);
         return boxedOpCode != null ? boxedOpCode : OP_NONE;
     }
-
     /**
      * Retrieve whether the op allows the system (and system ui) to
      * bypass the user restriction.
@@ -1222,17 +989,13 @@ public class AppOpsManager {
     public static boolean opAllowSystemBypassRestriction(int op) {
         return sOpAllowSystemRestrictionBypass[op];
     }
-
     /**
      * Retrieve the default mode for the operation.
      * @hide
      */
-    public static int opToDefaultMode(int op, boolean isStrict) {
-        if (isStrict)
-            return sOpDefaultStrictMode[op];
+    public static int opToDefaultMode(int op) {
         return sOpDefaultMode[op];
     }
-
     /**
      * Retrieve whether the op allows itself to be reset.
      * @hide
@@ -1240,7 +1003,6 @@ public class AppOpsManager {
     public static boolean opAllowsReset(int op) {
         return !sOpDisableReset[op];
     }
-
     /**
      * Class holding all of the operation information associated with an app.
      * @hide
@@ -1249,30 +1011,24 @@ public class AppOpsManager {
         private final String mPackageName;
         private final int mUid;
         private final List<OpEntry> mEntries;
-
         public PackageOps(String packageName, int uid, List<OpEntry> entries) {
             mPackageName = packageName;
             mUid = uid;
             mEntries = entries;
         }
-
         public String getPackageName() {
             return mPackageName;
         }
-
         public int getUid() {
             return mUid;
         }
-
         public List<OpEntry> getOps() {
             return mEntries;
         }
-
         @Override
         public int describeContents() {
             return 0;
         }
-
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(mPackageName);
@@ -1282,7 +1038,6 @@ public class AppOpsManager {
                 mEntries.get(i).writeToParcel(dest, flags);
             }
         }
-
         PackageOps(Parcel source) {
             mPackageName = source.readString();
             mUid = source.readInt();
@@ -1292,18 +1047,15 @@ public class AppOpsManager {
                 mEntries.add(OpEntry.CREATOR.createFromParcel(source));
             }
         }
-
         public static final Creator<PackageOps> CREATOR = new Creator<PackageOps>() {
             @Override public PackageOps createFromParcel(Parcel source) {
                 return new PackageOps(source);
             }
-
             @Override public PackageOps[] newArray(int size) {
                 return new PackageOps[size];
             }
         };
     }
-
     /**
      * Class holding the information about one unique operation of an application.
      * @hide
@@ -1316,11 +1068,8 @@ public class AppOpsManager {
         private final int mDuration;
         private final int mProxyUid;
         private final String mProxyPackageName;
-        private final int mAllowedCount;
-        private final int mIgnoredCount;
-
         public OpEntry(int op, int mode, long time, long rejectTime, int duration,
-                       int proxyUid, String proxyPackage, int allowedCount, int ignoredCount) {
+                int proxyUid, String proxyPackage) {
             mOp = op;
             mMode = mode;
             mTime = time;
@@ -1328,55 +1077,35 @@ public class AppOpsManager {
             mDuration = duration;
             mProxyUid = proxyUid;
             mProxyPackageName = proxyPackage;
-            mAllowedCount = allowedCount;
-            mIgnoredCount = ignoredCount;
         }
-
         public int getOp() {
             return mOp;
         }
-
         public int getMode() {
             return mMode;
         }
-
         public long getTime() {
             return mTime;
         }
-
         public long getRejectTime() {
             return mRejectTime;
         }
-
         public boolean isRunning() {
             return mDuration == -1;
         }
-
         public int getDuration() {
             return mDuration == -1 ? (int)(System.currentTimeMillis()-mTime) : mDuration;
         }
-
         public int getProxyUid() {
             return  mProxyUid;
         }
-
         public String getProxyPackageName() {
             return mProxyPackageName;
         }
-
-        public int getAllowedCount() {
-            return mAllowedCount;
-        }
-
-        public int getIgnoredCount() {
-            return mIgnoredCount;
-        }
-
         @Override
         public int describeContents() {
             return 0;
         }
-
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(mOp);
@@ -1386,10 +1115,7 @@ public class AppOpsManager {
             dest.writeInt(mDuration);
             dest.writeInt(mProxyUid);
             dest.writeString(mProxyPackageName);
-            dest.writeInt(mAllowedCount);
-            dest.writeInt(mIgnoredCount);
         }
-
         OpEntry(Parcel source) {
             mOp = source.readInt();
             mMode = source.readInt();
@@ -1398,28 +1124,22 @@ public class AppOpsManager {
             mDuration = source.readInt();
             mProxyUid = source.readInt();
             mProxyPackageName = source.readString();
-            mAllowedCount = source.readInt();
-            mIgnoredCount = source.readInt();
         }
-
         public static final Creator<OpEntry> CREATOR = new Creator<OpEntry>() {
             @Override public OpEntry createFromParcel(Parcel source) {
                 return new OpEntry(source);
             }
-
             @Override public OpEntry[] newArray(int size) {
                 return new OpEntry[size];
             }
         };
     }
-
     /**
      * Callback for notification of changes to operation state.
      */
     public interface OnOpChangedListener {
         public void onOpChanged(String op, String packageName);
     }
-
     /**
      * Callback for notification of changes to operation state.
      * This allows you to see the raw op codes instead of strings.
@@ -1429,12 +1149,10 @@ public class AppOpsManager {
         public void onOpChanged(String op, String packageName) { }
         public void onOpChanged(int op, String packageName) { }
     }
-
     AppOpsManager(Context context, IAppOpsService service) {
         mContext = context;
         mService = service;
     }
-
     /**
      * Retrieve current operation state for all applications.
      *
@@ -1448,7 +1166,6 @@ public class AppOpsManager {
         }
         return null;
     }
-
     /**
      * Retrieve current operation state for one application.
      *
@@ -1464,7 +1181,6 @@ public class AppOpsManager {
         }
         return null;
     }
-
     /** @hide */
     public void setUidMode(int code, int uid, int mode) {
         try {
@@ -1472,7 +1188,6 @@ public class AppOpsManager {
         } catch (RemoteException e) {
         }
     }
-
     /** @hide */
     public void setMode(int code, int uid, String packageName, int mode) {
         try {
@@ -1480,7 +1195,6 @@ public class AppOpsManager {
         } catch (RemoteException e) {
         }
     }
-
     /**
      * Set a non-persisted restriction on an audio operation at a stream-level.
      * Restrictions are temporary additional constraints imposed on top of the persisted rules
@@ -1500,7 +1214,6 @@ public class AppOpsManager {
         } catch (RemoteException e) {
         }
     }
-
     /** @hide */
     public void resetAllModes() {
         try {
@@ -1508,7 +1221,6 @@ public class AppOpsManager {
         } catch (RemoteException e) {
         }
     }
-
     /**
      * Gets the app op name associated with a given permission.
      * The app op name is one of the public constants defined
@@ -1524,7 +1236,6 @@ public class AppOpsManager {
         }
         return sOpToString[opCode];
     }
-
     /**
      * Monitor for changes to the operating mode for the given op in the given app package.
      * @param op The operation to monitor, one of OPSTR_*.
@@ -1535,7 +1246,6 @@ public class AppOpsManager {
             final OnOpChangedListener callback) {
         startWatchingMode(strOpToOp(op), packageName, callback);
     }
-
     /**
      * Monitor for changes to the operating mode for the given op in the given app package.
      * @param op The operation to monitor, one of OP_*.
@@ -1565,7 +1275,6 @@ public class AppOpsManager {
             }
         }
     }
-
     /**
      * Stop monitoring that was previously started with {@link #startWatchingMode}.  All
      * monitoring associated with this callback will be removed.
@@ -1581,11 +1290,9 @@ public class AppOpsManager {
             }
         }
     }
-
     private String buildSecurityExceptionMsg(int op, int uid, String packageName) {
         return packageName + " from uid " + uid + " not allowed to perform " + sOpNames[op];
     }
-
     /**
      * {@hide}
      */
@@ -1596,7 +1303,6 @@ public class AppOpsManager {
         }
         return val;
     }
-
     /**
      * Do a quick check for whether an application might be able to perform an operation.
      * This is <em>not</em> a security check; you must use {@link #noteOp(String, int, String)}
@@ -1616,7 +1322,6 @@ public class AppOpsManager {
     public int checkOp(String op, int uid, String packageName) {
         return checkOp(strOpToOp(op), uid, packageName);
     }
-
     /**
      * Like {@link #checkOp} but instead of throwing a {@link SecurityException} it
      * returns {@link #MODE_ERRORED}.
@@ -1624,7 +1329,6 @@ public class AppOpsManager {
     public int checkOpNoThrow(String op, int uid, String packageName) {
         return checkOpNoThrow(strOpToOp(op), uid, packageName);
     }
-
     /**
      * Make note of an application performing an operation.  Note that you must pass
      * in both the uid and name of the application to be checked; this function will verify
@@ -1642,7 +1346,6 @@ public class AppOpsManager {
     public int noteOp(String op, int uid, String packageName) {
         return noteOp(strOpToOp(op), uid, packageName);
     }
-
     /**
      * Like {@link #noteOp} but instead of throwing a {@link SecurityException} it
      * returns {@link #MODE_ERRORED}.
@@ -1650,7 +1353,6 @@ public class AppOpsManager {
     public int noteOpNoThrow(String op, int uid, String packageName) {
         return noteOpNoThrow(strOpToOp(op), uid, packageName);
     }
-
     /**
      * Make note of an application performing an operation on behalf of another
      * application when handling an IPC. Note that you must pass the package name
@@ -1669,7 +1371,6 @@ public class AppOpsManager {
     public int noteProxyOp(String op, String proxiedPackageName) {
         return noteProxyOp(strOpToOp(op), proxiedPackageName);
     }
-
     /**
      * Like {@link #noteProxyOp(String, String)} but instead
      * of throwing a {@link SecurityException} it returns {@link #MODE_ERRORED}.
@@ -1677,7 +1378,6 @@ public class AppOpsManager {
     public int noteProxyOpNoThrow(String op, String proxiedPackageName) {
         return noteProxyOpNoThrow(strOpToOp(op), proxiedPackageName);
     }
-
     /**
      * Report that an application has started executing a long-running operation.  Note that you
      * must pass in both the uid and name of the application to be checked; this function will
@@ -1697,7 +1397,6 @@ public class AppOpsManager {
     public int startOp(String op, int uid, String packageName) {
         return startOp(strOpToOp(op), uid, packageName);
     }
-
     /**
      * Like {@link #startOp} but instead of throwing a {@link SecurityException} it
      * returns {@link #MODE_ERRORED}.
@@ -1705,7 +1404,6 @@ public class AppOpsManager {
     public int startOpNoThrow(String op, int uid, String packageName) {
         return startOpNoThrow(strOpToOp(op), uid, packageName);
     }
-
     /**
      * Report that an application is no longer performing an operation that had previously
      * been started with {@link #startOp(String, int, String)}.  There is no validation of input
@@ -1715,7 +1413,6 @@ public class AppOpsManager {
     public void finishOp(String op, int uid, String packageName) {
         finishOp(strOpToOp(op), uid, packageName);
     }
-
     /**
      * Do a quick check for whether an application might be able to perform an operation.
      * This is <em>not</em> a security check; you must use {@link #noteOp(int, int, String)}
@@ -1744,7 +1441,6 @@ public class AppOpsManager {
         }
         return MODE_IGNORED;
     }
-
     /**
      * Like {@link #checkOp} but instead of throwing a {@link SecurityException} it
      * returns {@link #MODE_ERRORED}.
@@ -1757,7 +1453,6 @@ public class AppOpsManager {
         }
         return MODE_ERRORED;
     }
-
     /**
      * Do a quick check to validate if a package name belongs to a UID.
      *
@@ -1774,7 +1469,6 @@ public class AppOpsManager {
             throw new SecurityException("Unable to verify package ownership", e);
         }
     }
-
     /**
      * Like {@link #checkOp} but at a stream-level for audio operations.
      * @hide
@@ -1790,7 +1484,6 @@ public class AppOpsManager {
         }
         return MODE_IGNORED;
     }
-
     /**
      * Like {@link #checkAudioOp} but instead of throwing a {@link SecurityException} it
      * returns {@link #MODE_ERRORED}.
@@ -1803,7 +1496,6 @@ public class AppOpsManager {
         }
         return MODE_ERRORED;
     }
-
     /**
      * Make note of an application performing an operation.  Note that you must pass
      * in both the uid and name of the application to be checked; this function will verify
@@ -1830,7 +1522,6 @@ public class AppOpsManager {
         }
         return MODE_IGNORED;
     }
-
     /**
      * Make note of an application performing an operation on behalf of another
      * application when handling an IPC. Note that you must pass the package name
@@ -1859,7 +1550,6 @@ public class AppOpsManager {
         }
         return mode;
     }
-
     /**
      * Like {@link #noteProxyOp(int, String)} but instead
      * of throwing a {@link SecurityException} it returns {@link #MODE_ERRORED}.
@@ -1873,7 +1563,6 @@ public class AppOpsManager {
         }
         return MODE_ERRORED;
     }
-
     /**
      * Like {@link #noteOp} but instead of throwing a {@link SecurityException} it
      * returns {@link #MODE_ERRORED}.
@@ -1886,12 +1575,10 @@ public class AppOpsManager {
         }
         return MODE_ERRORED;
     }
-
     /** @hide */
     public int noteOp(int op) {
         return noteOp(op, Process.myUid(), mContext.getOpPackageName());
     }
-
     /** @hide */
     public static IBinder getToken(IAppOpsService service) {
         synchronized (AppOpsManager.class) {
@@ -1906,7 +1593,6 @@ public class AppOpsManager {
             return sToken;
         }
     }
-
     /**
      * Report that an application has started executing a long-running operation.  Note that you
      * must pass in both the uid and name of the application to be checked; this function will
@@ -1935,7 +1621,6 @@ public class AppOpsManager {
         }
         return MODE_IGNORED;
     }
-
     /**
      * Like {@link #startOp} but instead of throwing a {@link SecurityException} it
      * returns {@link #MODE_ERRORED}.
@@ -1948,12 +1633,10 @@ public class AppOpsManager {
         }
         return MODE_ERRORED;
     }
-
     /** @hide */
     public int startOp(int op) {
         return startOp(op, Process.myUid(), mContext.getOpPackageName());
     }
-
     /**
      * Report that an application is no longer performing an operation that had previously
      * been started with {@link #startOp(int, int, String)}.  There is no validation of input
@@ -1967,54 +1650,8 @@ public class AppOpsManager {
         } catch (RemoteException e) {
         }
     }
-
     /** @hide */
     public void finishOp(int op) {
         finishOp(op, Process.myUid(), mContext.getOpPackageName());
-    }
-
-    /** @hide */
-    public static boolean isStrictEnable() {
-        return SystemProperties.getBoolean("persist.sys.strict_op_enable", false);
-    }
-
-    /**
-     * Check if op in strict mode
-     * @hide
-     */
-    public static boolean isStrictOp(int code) {
-        return sOpStrictMode[code];
-    }
-
-
-    /** @hide */
-    public static int stringToMode(String permission) {
-        if ("allowed".equalsIgnoreCase(permission)) {
-            return AppOpsManager.MODE_ALLOWED;
-        } else if ("ignored".equalsIgnoreCase(permission)) {
-            return AppOpsManager.MODE_IGNORED;
-        } else if ("ask".equalsIgnoreCase(permission)) {
-            return AppOpsManager.MODE_ASK;
-        }
-        return AppOpsManager.MODE_ERRORED;
-    }
-
-    /** @hide */
-    public static int stringOpToOp (String op) {
-        Integer val = sOpStrToOp.get(op);
-        if (val == null) {
-            val = OP_NONE;
-        }
-        return val;
-    }
-
-    /** @hide */
-    public boolean isControlAllowed(int op, String packageName) {
-        boolean isShow = true;
-        try {
-            isShow = mService.isControlAllowed(op, packageName);
-        } catch (RemoteException e) {
-        }
-        return isShow;
     }
 }
