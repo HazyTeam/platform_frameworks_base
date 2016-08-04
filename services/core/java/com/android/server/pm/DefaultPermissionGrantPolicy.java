@@ -593,27 +593,6 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(saberChrome, CONTACTS_PERMISSIONS, userId);
             }
 
-			// Chromium
-            PackageParser.Package chromiumRPackage = getDefaultProviderAuthorityPackageLPr(
-                    "org.chromium.chrome", userId);
-            if (chromiumRPackage != null) {
-                grantRuntimePermissionsLPw(chromiumRPackage, CONTACTS_PERMISSIONS, userId);
-            }
-
-            // Chromium Other
-            PackageParser.Package chromiumOPackage = getDefaultProviderAuthorityPackageLPr(
-                    "org.swe.atego.browser", userId);
-            if (chromiumOPackage != null) {
-                grantRuntimePermissionsLPw(chromiumOPackage, CONTACTS_PERMISSIONS, userId);
-            }
-
-            // SaberChrome
-            PackageParser.Package saberChrome = getDefaultProviderAuthorityPackageLPr(
-                    "org.frap129.saberchrome.browser", userId);
-            if (saberChrome != null) {
-                grantRuntimePermissionsLPw(saberChrome, CONTACTS_PERMISSIONS, userId);
-            }
-
             // Android Wear Home
             if (mService.hasSystemFeature(PackageManager.FEATURE_WATCH)) {
                 Intent homeIntent = new Intent(Intent.ACTION_MAIN);
@@ -632,6 +611,7 @@ final class DefaultPermissionGrantPolicy {
                     grantRuntimePermissionsLPw(wearHomePackage, LOCATION_PERMISSIONS, false,
                             userId);
                 }
+            }
 
             // Google Account
             PackageParser.Package googleaccountPackage = getDefaultProviderAuthorityPackageLPr(

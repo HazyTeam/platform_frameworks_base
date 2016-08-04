@@ -248,9 +248,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                 mEmptyView = mEmptyViewStub.inflate();
             }
             mEmptyView.setVisibility(View.VISIBLE);
-            if (Constants.DebugFlags.App.EnableSearchBar) {
-                mRecentsView.setSearchBarVisibility(View.GONE);
-            }
+            mRecentsView.setSearchBarVisibility(View.GONE);
             mEmptyView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
